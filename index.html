@@ -156,6 +156,40 @@ label{display:block;font-size:10px;font-weight:700;color:#666;
 .profile-card h2{font-size:16px;color:var(--gold);border-bottom:2px solid var(--gold);
   padding-bottom:6px;margin-bottom:16px;}
 
+/* PRICING */
+.pricing-hero{text-align:center;padding:20px 0 28px;}
+.pricing-hero h2{font-size:22px;color:var(--gold);margin-bottom:6px;}
+.pricing-hero p{font-size:13px;color:#888;}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-bottom:24px;}
+.price-card{background:#fff;border:2px solid var(--fb);border-radius:12px;
+  padding:22px 20px;text-align:center;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.08);
+  display:flex;flex-direction:column;}
+.price-card.popular{border-color:var(--gold);box-shadow:0 6px 20px rgba(184,134,11,.18);transform:translateY(-4px);}
+.price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--gold);color:#fff;font-size:10px;font-weight:900;
+  padding:4px 14px;border-radius:14px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;}
+.price-card h3{font-size:15px;color:#444;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.price-amt{font-size:34px;font-weight:900;color:var(--ink);margin-bottom:2px;}
+.price-amt span{font-size:14px;font-weight:700;color:#999;}
+.price-sub{font-size:12px;color:var(--green);font-weight:700;margin-bottom:16px;}
+.price-feats{list-style:none;text-align:left;font-size:12px;color:#555;
+  margin-bottom:20px;flex:1;}
+.price-feats li{padding:5px 0;border-bottom:1px dashed #eee;}
+.price-feats li:last-child{border-bottom:none;}
+.price-feats li:before{content:"✓ ";color:var(--green);font-weight:900;}
+.unlimited-card{background:linear-gradient(135deg,#222,#3a3a3a);color:#fff;border-color:#222;}
+.unlimited-card h3{color:#ffd700;}
+.unlimited-card .price-amt{color:#fff;}
+.unlimited-card .price-sub{color:#7ed99a;}
+.unlimited-card .price-feats{color:#ddd;}
+.unlimited-card .price-feats li{border-bottom-color:#444;}
+.contact-strip{background:#fff;border:1px solid var(--fb);border-radius:10px;
+  padding:20px 24px;text-align:center;}
+.contact-strip h4{font-size:14px;color:var(--gold);margin-bottom:8px;}
+.contact-strip p{font-size:12px;color:#888;margin-bottom:14px;}
+.contact-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.wa-btn{background:#25D366;color:#fff;}
+
 /* ADMIN */
 .aw{max-width:900px;margin:0 auto;padding:16px 12px 60px;}
 .apanel{background:#fff;border-radius:8px;padding:20px 24px;margin-bottom:20px;
@@ -239,6 +273,7 @@ label{display:block;font-size:10px;font-weight:700;color:#666;
         oninput="clr('login-msg')" onkeydown="if(event.key==='Enter')doLogin()">
       <button class="btn btn-gold btn-w" id="login-btn" onclick="doLogin()" disabled>Login</button>
       <div class="msg" id="login-msg"></div>
+      <p style="font-size:10px;color:#bbb;margin-top:18px;">© 2026 Opsmeld Consulting. All rights reserved.</p>
     </div>
   </div>
 </div>
@@ -576,6 +611,84 @@ label{display:block;font-size:10px;font-weight:700;color:#666;
   </div>
 </div>
 
+<!-- ══════════════ PRICING / UPGRADE ══════════════ -->
+<div id="screen-pricing" class="screen">
+  <div class="wrap">
+    <div class="pricing-hero">
+      <h2>⚡ Upgrade Your Plan</h2>
+      <p>Top up tokens or go unlimited — pick what fits your transport business</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Starter Pack</h3>
+        <div class="price-amt">₹199</div>
+        <div class="price-sub">100 tokens · ₹1.99/print</div>
+        <ul class="price-feats">
+          <li>~100 fresh GR notes</li>
+          <li>Unlimited reprints*</li>
+          <li>Valid for 90 days</li>
+          <li>WhatsApp support</li>
+        </ul>
+        <button class="btn btn-gold btn-w" onclick="requestTopup('Starter Pack', '₹199 / 100 tokens')">Choose Starter</button>
+      </div>
+
+      <div class="price-card popular">
+        <div class="price-badge">⭐ Most Popular</div>
+        <h3>Business Pack</h3>
+        <div class="price-amt">₹499<span>/300 tokens</span></div>
+        <div class="price-sub">₹1.66/print · Save 17%</div>
+        <ul class="price-feats">
+          <li>~300 fresh GR notes</li>
+          <li>Unlimited reprints*</li>
+          <li>Valid for 180 days</li>
+          <li>Priority WhatsApp support</li>
+          <li>Multi-user discount available</li>
+        </ul>
+        <button class="btn btn-gold btn-w" onclick="requestTopup('Business Pack', '₹499 / 300 tokens')">Choose Business</button>
+      </div>
+
+      <div class="price-card">
+        <h3>Bulk Pack</h3>
+        <div class="price-amt">₹999</div>
+        <div class="price-sub">750 tokens · ₹1.33/print</div>
+        <ul class="price-feats">
+          <li>~750 fresh GR notes</li>
+          <li>Unlimited reprints*</li>
+          <li>Valid for 365 days</li>
+          <li>Priority WhatsApp support</li>
+          <li>Best for fleet operators</li>
+        </ul>
+        <button class="btn btn-gold btn-w" onclick="requestTopup('Bulk Pack', '₹999 / 750 tokens')">Choose Bulk</button>
+      </div>
+
+      <div class="price-card unlimited-card">
+        <h3>🚀 Unlimited Monthly</h3>
+        <div class="price-amt">₹299<span>/month</span></div>
+        <div class="price-sub">No token counting</div>
+        <ul class="price-feats">
+          <li>Unlimited fresh GR notes</li>
+          <li>Unlimited reprints</li>
+          <li>Best for high-volume transporters</li>
+          <li>Priority support</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <button class="btn btn-w" style="background:#ffd700;color:#222;" onclick="requestTopup('Unlimited Monthly', '₹299/month')">Go Unlimited</button>
+      </div>
+    </div>
+
+    <div class="contact-strip">
+      <h4>💬 Need a custom plan or invoice for your business?</h4>
+      <p>Reprints cost ¼ token (0.25) regardless of plan. Tap a plan above or message us directly to top up your account.</p>
+      <div class="contact-btns">
+        <a class="btn wa-btn btn-sm" href="https://wa.me/910000000000?text=Hi%2C%20I%27d%20like%20to%20top%20up%20tokens%20for%20Transport%20GR%20Note%20Generator." target="_blank" rel="noopener">📱 WhatsApp Us</a>
+        <a class="btn btn-gray btn-sm" href="mailto:billing@opsmeld.com?subject=GR%20Note%20Generator%20-%20Token%20Top-up%20Request">✉️ Email Billing</a>
+      </div>
+      <p style="font-size:10px;color:#bbb;margin-top:14px;">*Reprints always cost 0.25 tokens even within "unlimited" plans counted as fair-use; excessive automated reprinting may be reviewed.</p>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ MY PAST GRs ══════════════ -->
 <div id="screen-mygrs" class="screen">
   <div class="wrap">
@@ -739,8 +852,16 @@ function showScreen(id) {
       '👤 ' + USER.name + '   |   🎫 ' + USER.tokens + ' tokens';
     document.getElementById('tb-btns').innerHTML =
       '<button class="btn btn-gray btn-sm" onclick="openMyGRs()">📜 My Past GRs</button>' +
+      '<button class="btn btn-gold btn-sm" onclick="showScreen(\'screen-pricing\')">⚡ Upgrade / Buy Tokens</button>' +
       '<button class="btn btn-red btn-sm" onclick="logout()">Logout</button>';
   } else if (id === 'screen-mygrs') {
+    tb.style.display = 'flex';
+    document.getElementById('tb-user').textContent =
+      '👤 ' + USER.name + '   |   🎫 ' + USER.tokens + ' tokens';
+    document.getElementById('tb-btns').innerHTML =
+      '<button class="btn btn-gray btn-sm" onclick="showScreen(\'screen-app\')">← Back to GR Form</button>' +
+      '<button class="btn btn-red btn-sm" onclick="logout()">Logout</button>';
+  } else if (id === 'screen-pricing') {
     tb.style.display = 'flex';
     document.getElementById('tb-user').textContent =
       '👤 ' + USER.name + '   |   🎫 ' + USER.tokens + ' tokens';
@@ -1082,8 +1203,18 @@ function doPrint() {
 }
 
 // ══════════════════════════════════════════════════════
-//  MY PAST GRs + REPRINT
+//  PRICING / UPGRADE REQUEST
 // ══════════════════════════════════════════════════════
+function requestTopup(planName, planPrice) {
+  var msg = 'Hi, I would like to purchase the *' + planName + '* (' + planPrice + ') for Transport GR Note Generator.%0A%0A'
+    + 'My PIN: ' + USER.pin + '%0A'
+    + 'My Name: ' + USER.name + '%0A'
+    + 'Company: ' + (USER.profile ? USER.profile.coName : '');
+  var waUrl = 'https://wa.me/910000000000?text=' + msg;
+  window.open(waUrl, '_blank');
+}
+
+
 var REPRINT_TARGET = null; // holds the GR record being reprinted
 
 function openMyGRs() {
