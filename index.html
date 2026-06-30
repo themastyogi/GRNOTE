@@ -5,314 +5,446 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Transport GR Note Generator</title>
 <style>
-:root {
-  --accent: #b8860b;
-  --accent2: #1a6e2e;
-  --danger: #c0392b;
-  --border: #333;
-  --field-border: #c8b97a;
-  --highlight: #fffbe6;
-  --ink: #111;
+:root{
+  --gold:#b8860b;--green:#1a6e2e;--red:#c0392b;
+  --border:#333;--fb:#c8b97a;--hi:#fffbe6;--ink:#111;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; background: #e8e0d0; min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#e8e0d0;min-height:100vh;}
 
-/* ===== SCREENS ===== */
-.screen { display: none; }
-.screen.active { display: block; }
+/* SCREENS */
+.screen{display:none!important;}
+.screen.active{display:block!important;}
 
-/* ===== LOGIN SCREEN ===== */
-#screen-login {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-}
-.login-card {
-  background: #fff; border: 2px solid var(--field-border); border-radius: 12px;
-  padding: 40px 36px; max-width: 380px; width: 100%;
-  box-shadow: 0 4px 24px rgba(0,0,0,.15); text-align: center;
-}
-.login-card h1 { font-size: 22px; color: var(--accent); margin-bottom: 4px; }
-.login-card p { font-size: 12px; color: #888; margin-bottom: 24px; }
-.pin-input {
-  width: 100%; padding: 14px; font-size: 22px; letter-spacing: 6px;
-  text-align: center; border: 2px solid var(--field-border); border-radius: 8px;
-  background: var(--highlight); outline: none; margin-bottom: 14px;
-}
-.pin-input:focus { border-color: var(--accent); }
-.btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 6px;
-  font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .15s; }
-.btn:hover { opacity: .85; }
-.btn-gold { background: var(--accent); color: #fff; }
-.btn-green { background: var(--accent2); color: #fff; }
-.btn-red { background: var(--danger); color: #fff; }
-.btn-gray { background: #888; color: #fff; }
-.btn-sm { display: inline-block; width: auto; padding: 7px 18px; font-size: 13px; }
-.token-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--highlight); border: 2px solid var(--accent);
-  border-radius: 20px; padding: 6px 16px; font-weight: 700;
-  font-size: 14px; color: var(--accent); margin-bottom: 16px;
-}
-.error-msg { color: var(--danger); font-size: 13px; margin-top: 8px; min-height: 20px; }
-.success-msg { color: var(--accent2); font-size: 13px; margin-top: 8px; min-height: 20px; }
+/* CARD */
+.card-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;border:2px solid var(--fb);border-radius:12px;
+  padding:36px 32px;max-width:440px;width:100%;
+  box-shadow:0 4px 24px rgba(0,0,0,.15);text-align:center;}
+.card h1{font-size:22px;color:var(--gold);margin-bottom:4px;}
+.card .sub{font-size:12px;color:#888;margin-bottom:18px;}
+.card .icon{font-size:38px;margin-bottom:8px;}
 
-/* ===== TOP BAR ===== */
-#topbar {
-  background: #222; color: #fff; padding: 10px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 8px;
+/* DISCLAIMER BOX */
+.disclaimer-box{
+  background:#fffbe6;border:1px solid #d4a800;border-radius:6px;
+  padding:10px 14px;margin-bottom:18px;text-align:left;
 }
-#topbar .co-name { font-size: 15px; font-weight: 900; letter-spacing: .05em; color: #ffd700; }
-#topbar .user-info { font-size: 12px; color: #ccc; }
-.topbar-btns { display: flex; gap: 8px; }
+.disclaimer-box .dtitle{font-size:11px;font-weight:900;color:#7a5c00;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.disclaimer-box p{font-size:11px;color:#5a4500;line-height:1.55;}
+.accept-row{display:flex;align-items:flex-start;gap:8px;margin-top:8px;text-align:left;}
+.accept-row input[type=checkbox]{width:15px;height:15px;margin-top:2px;flex-shrink:0;accent-color:var(--gold);}
+.accept-row label{font-size:11px;color:#5a4500;font-weight:700;cursor:pointer;}
 
-/* ===== MAIN APP ===== */
-#screen-app { display: none; }
-.app-wrap { max-width: 860px; margin: 0 auto; padding: 16px 12px 60px; }
+/* INPUTS */
+.pin-box{width:100%;padding:14px;font-size:22px;letter-spacing:6px;text-align:center;
+  border:2px solid var(--fb);border-radius:8px;background:var(--hi);
+  outline:none;margin-bottom:14px;}
+.pin-box:focus{border-color:var(--gold);}
+input,select{width:100%;border:1px solid var(--fb);border-radius:4px;
+  padding:7px 9px;font-size:13px;background:var(--hi);color:var(--ink);outline:none;}
+input:focus,select:focus{border-color:var(--gold);}
+input[readonly]{background:#f0ede4;color:#666;cursor:not-allowed;}
+input[readonly]:focus{border-color:var(--fb);}
 
-.form-panel {
-  background: #fff; border: 1px solid var(--field-border); border-radius: 8px;
-  padding: 20px 24px; margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.1);
-}
-.section-label {
-  font-size: 11px; font-weight: 900; color: var(--accent);
-  text-transform: uppercase; letter-spacing: .1em;
-  margin: 14px 0 10px; border-left: 3px solid var(--accent); padding-left: 8px;
-}
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
-.form-grid .full { grid-column: 1 / -1; }
-label { display: block; font-size: 10px; font-weight: 700; color: #666;
-  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 3px; }
-input, select {
-  width: 100%; border: 1px solid var(--field-border); border-radius: 4px;
-  padding: 7px 9px; font-size: 13px; background: var(--highlight);
-  color: var(--ink); outline: none;
-}
-input:focus, select:focus { border-color: var(--accent); }
-.btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+/* BUTTONS */
+.btn{display:inline-block;padding:11px 24px;border:none;border-radius:6px;
+  font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.btn:hover{opacity:.85;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-w{width:100%;display:block;}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-gray{background:#888;color:#fff;}
+.btn-sm{padding:7px 16px;font-size:13px;}
+.lnk{display:inline;background:none;border:none;color:#bbb;font-size:11px;
+  text-decoration:underline;cursor:pointer;padding:4px 0;}
+.lnk:hover{color:var(--gold);}
 
-.logo-upload-btn {
-  display: inline-block; padding: 7px 14px; background: var(--accent);
-  color: #fff; font-size: 12px; font-weight: 700; border-radius: 4px;
-  cursor: pointer;
-}
+/* MESSAGES */
+.msg{font-size:13px;margin-top:10px;padding:7px 10px;border-radius:4px;display:none;}
+.msg.err{display:block;color:var(--red);background:#fff0f0;}
+.msg.ok {display:block;color:var(--green);background:#f0fff4;}
 
-/* ===== GR DOCUMENT (print target) ===== */
-#gr-preview { display: none; max-width: 860px; margin: 0 auto 20px; }
-#gr-doc {
-  background: #fff; border: 2px solid var(--border);
-  padding: 24px 32px; font-family: Arial, sans-serif;
-  color: var(--ink); min-height: 980px;
-}
-.pan-badge { display:inline-block; background:#000; color:#ff0; font-size:11px; font-weight:900; padding:2px 8px; letter-spacing:.05em; margin-bottom:5px; }
-.doc-header { display:flex; align-items:flex-start; gap:14px; margin-bottom:5px; }
-.logo-box { width:96px; height:74px; border:1px solid #aaa; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f5f5f5; }
-.company-block { flex:1; text-align:center; }
-.company-name { font-size:28px; font-weight:900; text-decoration:underline; text-transform:uppercase; }
-.company-sub { font-size:11px; font-weight:700; text-decoration:underline; letter-spacing:.1em; text-transform:uppercase; margin-top:2px; }
-.gr-no { font-size:13px; font-weight:700; white-space:nowrap; padding-top:5px; }
-.address-line { text-align:center; font-size:11px; font-weight:700; margin:3px 0; text-transform:uppercase; }
-.meta-row { display:flex; gap:6px; font-size:12px; font-weight:700; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:4px 0; margin:5px 0; flex-wrap:wrap; align-items:center; }
-.meta-row .track { margin-left:auto; font-size:13px; font-weight:900; text-decoration:underline; }
-.owner-row { display:grid; grid-template-columns:1fr 1fr 1fr; font-size:11px; font-weight:700; text-align:center; border-bottom:1px solid var(--border); padding:3px 0; text-transform:uppercase; }
-.party-block { display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid var(--border); }
-.party-col { padding:4px 5px; font-size:11px; }
-.party-col:first-child { border-right:1px solid var(--border); }
-.party-title { font-weight:900; font-size:11px; text-transform:uppercase; }
-.gstin-row { display:grid; grid-template-columns:1fr 1fr; font-size:10px; font-weight:700; border-bottom:1px solid var(--border); }
-.gstin-col { padding:2px 5px; text-transform:uppercase; }
-.gstin-col:first-child { border-right:1px solid var(--border); }
-.goods-table { width:100%; border-collapse:collapse; font-size:11px; margin-top:3px; }
-.goods-table th { border:1px solid var(--border); background:#f0f0f0; font-size:10px; font-weight:900; padding:3px 5px; text-align:center; text-transform:uppercase; }
-.goods-table td { border:1px solid var(--border); padding:4px 5px; vertical-align:top; }
-.paid-stamp { font-size:28px; font-weight:900; text-align:center; text-decoration:underline; }
-.remark-inner { font-size:11px; font-weight:700; }
-.remark-inner .row { display:flex; justify-content:space-between; border-bottom:1px dotted #aaa; padding:2px 0; }
-.carrier-note { font-size:9px; font-weight:700; margin-top:35px; text-transform:uppercase; }
-.rate-inner { font-size:11px; font-weight:700; line-height:1.9; }
-.disclaimer { font-size:9px; font-weight:700; text-align:center; border-top:1px solid var(--border); margin-top:5px; padding-top:3px; text-transform:uppercase; line-height:1.4; }
-.sign-row { display:grid; grid-template-columns:1fr 1fr 1fr; font-size:11px; font-weight:700; text-transform:uppercase; margin-top:10px; gap:8px; }
-.sign-row div { border-top:1px solid #aaa; padding-top:3px; text-align:center; }
+/* TOPBAR */
+#topbar{background:#222;color:#fff;padding:10px 20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.tb-co{font-size:15px;font-weight:900;color:#ffd700;}
+.tb-user{font-size:12px;color:#ccc;}
+.tb-btns{display:flex;gap:8px;}
 
-/* ===== ADMIN SCREEN ===== */
-#screen-admin { display: none; }
-.admin-wrap { max-width: 900px; margin: 0 auto; padding: 16px 12px 60px; }
-.admin-card { background: #fff; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,.1); }
-.admin-card h3 { font-size: 15px; color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 6px; margin-bottom: 14px; }
-table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.data-table th { background: #f0ead8; padding: 8px 10px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; border-bottom: 2px solid var(--field-border); }
-.data-table td { padding: 7px 10px; border-bottom: 1px solid #eee; }
-.data-table tr:hover td { background: var(--highlight); }
-.token-count { font-weight: 900; color: var(--accent2); }
-.token-zero { color: var(--danger); }
-.inline-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
-.inline-form > div { display: flex; flex-direction: column; gap: 3px; }
-.inline-form input { width: 160px; }
-.inline-form input.wide { width: 220px; }
+/* APP */
+.wrap{max-width:860px;margin:0 auto;padding:16px 12px 60px;}
+.tok-bar{text-align:center;padding:10px 0 6px;}
+.tok-badge{display:inline-flex;align-items:center;gap:8px;
+  background:var(--hi);border:2px solid var(--gold);
+  border-radius:20px;padding:6px 18px;font-weight:700;font-size:14px;color:var(--gold);}
 
-/* ===== MODAL ===== */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.55); z-index: 1000;
-  align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal-box {
-  background: #fff; border-radius: 10px; padding: 28px 32px;
-  max-width: 360px; width: 90%; text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,.25);
-}
-.modal-box h3 { font-size: 18px; margin-bottom: 10px; }
-.modal-box p { font-size: 14px; color: #555; margin-bottom: 20px; }
-.modal-btns { display: flex; gap: 12px; justify-content: center; }
+/* FORM */
+.panel{background:#fff;border:1px solid var(--fb);border-radius:8px;
+  padding:20px 24px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.1);}
+.sec{font-size:11px;font-weight:900;color:var(--gold);text-transform:uppercase;
+  letter-spacing:.1em;margin:14px 0 10px;border-left:3px solid var(--gold);padding-left:8px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;}
+.g2 .f{grid-column:1/-1;}
+label{display:block;font-size:10px;font-weight:700;color:#666;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.field-locked{position:relative;}
+.lock-badge{position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  font-size:10px;color:#aaa;pointer-events:none;}
+.btn-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.upl-lbl{display:inline-block;padding:7px 14px;background:var(--gold);
+  color:#fff;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;}
 
-/* ===== PRINT ===== */
-@media print {
-  body * { visibility: hidden; }
-  #gr-doc, #gr-doc * { visibility: visible; }
-  #gr-doc { position: fixed; inset: 0; border: none; padding: 16px 20px; }
+/* GR counter widget */
+.gr-counter{display:flex;align-items:center;gap:10px;margin-top:4px;}
+.gr-num-display{flex:1;font-size:22px;font-weight:900;color:var(--gold);
+  background:#f9f6ef;border:2px solid var(--fb);border-radius:6px;
+  padding:8px 12px;text-align:center;letter-spacing:2px;}
+.gr-meta{font-size:11px;color:#999;margin-top:3px;}
+
+/* GR DOC */
+#gr-preview{display:none;max-width:860px;margin:0 auto 20px;}
+#gr-doc{background:#fff;border:2px solid var(--border);padding:24px 32px;
+  font-family:Arial,sans-serif;color:var(--ink);min-height:980px;}
+.pan-b{display:inline-block;background:#000;color:#ff0;font-size:11px;
+  font-weight:900;padding:2px 8px;letter-spacing:.05em;margin-bottom:5px;}
+.dh{display:flex;align-items:flex-start;gap:14px;margin-bottom:5px;}
+.logo-b{width:96px;height:74px;border:1px solid #aaa;flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;background:#f5f5f5;}
+.co-blk{flex:1;text-align:center;}
+.co-nm{font-size:28px;font-weight:900;text-decoration:underline;text-transform:uppercase;}
+.co-sub{font-size:11px;font-weight:700;text-decoration:underline;
+  letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+.gr-no-doc{font-size:13px;font-weight:700;white-space:nowrap;padding-top:5px;}
+.addr-ln{text-align:center;font-size:11px;font-weight:700;margin:3px 0;text-transform:uppercase;}
+.meta{display:flex;gap:6px;font-size:12px;font-weight:700;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:4px 0;margin:5px 0;flex-wrap:wrap;align-items:center;}
+.meta .trk{margin-left:auto;font-size:13px;font-weight:900;text-decoration:underline;}
+.odr{display:grid;grid-template-columns:1fr 1fr 1fr;font-size:11px;font-weight:700;
+  text-align:center;border-bottom:1px solid var(--border);padding:3px 0;text-transform:uppercase;}
+.pb{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.pc{padding:4px 5px;font-size:11px;}
+.pc:first-child{border-right:1px solid var(--border);}
+.pt{font-weight:900;font-size:11px;text-transform:uppercase;}
+.gr{display:grid;grid-template-columns:1fr 1fr;font-size:10px;
+  font-weight:700;border-bottom:1px solid var(--border);}
+.gc{padding:2px 5px;text-transform:uppercase;}
+.gc:first-child{border-right:1px solid var(--border);}
+.gt{width:100%;border-collapse:collapse;font-size:11px;margin-top:3px;}
+.gt th{border:1px solid var(--border);background:#f0f0f0;font-size:10px;
+  font-weight:900;padding:3px 5px;text-align:center;text-transform:uppercase;}
+.gt td{border:1px solid var(--border);padding:4px 5px;vertical-align:top;}
+.ps{font-size:28px;font-weight:900;text-align:center;text-decoration:underline;}
+.ri{font-size:11px;font-weight:700;}
+.ri .rr{display:flex;justify-content:space-between;border-bottom:1px dotted #aaa;padding:2px 0;}
+.cn{font-size:9px;font-weight:700;margin-top:35px;text-transform:uppercase;}
+.rti{font-size:11px;font-weight:700;line-height:1.9;}
+.disc-doc{font-size:9px;font-weight:700;text-align:center;
+  border-top:1px solid var(--border);margin-top:5px;padding-top:3px;
+  text-transform:uppercase;line-height:1.4;}
+.srow{display:grid;grid-template-columns:1fr 1fr 1fr;font-size:11px;
+  font-weight:700;text-transform:uppercase;margin-top:10px;gap:8px;}
+.srow div{border-top:1px solid #aaa;padding-top:3px;text-align:center;}
+
+/* PROFILE SETUP */
+.profile-card{background:#fff;border:1px solid var(--fb);border-radius:8px;
+  padding:24px 28px;max-width:560px;margin:30px auto;box-shadow:0 2px 12px rgba(0,0,0,.1);}
+.profile-card h2{font-size:16px;color:var(--gold);border-bottom:2px solid var(--gold);
+  padding-bottom:6px;margin-bottom:16px;}
+
+/* ADMIN */
+.aw{max-width:900px;margin:0 auto;padding:16px 12px 60px;}
+.apanel{background:#fff;border-radius:8px;padding:20px 24px;margin-bottom:20px;
+  box-shadow:0 2px 12px rgba(0,0,0,.1);}
+.apanel h3{font-size:15px;color:var(--gold);border-bottom:2px solid var(--gold);
+  padding-bottom:6px;margin-bottom:14px;}
+.dt{width:100%;border-collapse:collapse;font-size:13px;}
+.dt th{background:#f0ead8;padding:8px 10px;text-align:left;font-size:11px;
+  text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--fb);}
+.dt td{padding:7px 10px;border-bottom:1px solid #eee;}
+.dt tr:hover td{background:var(--hi);}
+.tok-ok{font-weight:900;color:var(--green);}
+.tok-no{font-weight:900;color:var(--red);}
+.irow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.irow>div{display:flex;flex-direction:column;gap:3px;}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);
+  z-index:1000;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mb{background:#fff;border-radius:10px;padding:28px 32px;max-width:360px;
+  width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.25);}
+.mb h3{font-size:18px;margin-bottom:10px;}
+.mb p{font-size:14px;color:#555;margin-bottom:20px;}
+.mbtns{display:flex;gap:12px;justify-content:center;}
+
+/* PRINT */
+@media print{
+  body *{visibility:hidden;}
+  #gr-doc,#gr-doc *{visibility:visible;}
+  #gr-doc{position:fixed;inset:0;border:none;padding:16px 20px;}
 }
 </style>
 </head>
 <body>
 
-<!-- =========== LOGIN SCREEN =========== -->
-<div id="screen-login" class="screen active">
-  <div class="login-card">
-    <div style="font-size:36px;margin-bottom:8px;">🚛</div>
-    <h1>Transport GR Note</h1>
-    <p>Enter your PIN to continue</p>
-    <input class="pin-input" id="pin-input" type="password" maxlength="8" placeholder="••••" oninput="clearLoginError()">
-    <button class="btn btn-gold" onclick="doLogin()" style="margin-bottom:10px;">Login</button>
-    <button class="btn btn-gray btn-sm" onclick="showAdminLogin()" style="width:auto;margin:0 auto;display:block;font-size:12px;background:transparent;color:#aaa;text-decoration:underline;border:none;cursor:pointer;">Admin Login</button>
-    <div class="error-msg" id="login-error"></div>
-  </div>
-</div>
-
-<!-- =========== ADMIN LOGIN =========== -->
-<div id="screen-adminlogin" class="screen">
-  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
-    <div class="login-card">
-      <div style="font-size:32px;margin-bottom:8px;">🔐</div>
-      <h1>Admin Panel</h1>
-      <p>Enter admin password</p>
-      <input class="pin-input" id="admin-pwd-input" type="password" maxlength="20" placeholder="••••••••" oninput="clearAdminLoginError()">
-      <button class="btn btn-red" onclick="doAdminLogin()" style="margin-bottom:10px;">Access Admin</button>
-      <button class="btn btn-gray" onclick="showScreen('screen-login')" style="margin-top:6px;">← Back</button>
-      <div class="error-msg" id="admin-login-error"></div>
+<!-- ══════════════ SETUP (first run) ══════════════ -->
+<div id="screen-setup" class="screen">
+  <div class="card-wrap">
+    <div class="card">
+      <div class="icon">⚙️</div>
+      <h1>One-Time Setup</h1>
+      <p class="sub">Paste your Google Apps Script URL. Stored only in your browser — never in the HTML file.</p>
+      <label style="text-align:left;display:block;margin-bottom:5px;">Apps Script Web App URL</label>
+      <input id="setup-url" type="text" placeholder="https://script.google.com/macros/s/.../exec"
+        style="margin-bottom:12px;" onkeydown="if(event.key==='Enter')saveSetup()">
+      <button class="btn btn-gold btn-w" onclick="saveSetup()">Save &amp; Continue</button>
+      <div class="msg" id="setup-msg"></div>
+      <p style="font-size:10px;color:#bbb;margin-top:12px;">Stored in localStorage only. Not visible in source code.</p>
     </div>
   </div>
 </div>
 
-<!-- =========== TOP BAR (shown when app/admin active) =========== -->
-<div id="topbar" style="display:none;">
-  <span class="co-name" id="tb-coname">🚛 GR Note Generator</span>
-  <span class="user-info" id="tb-user"></span>
-  <div class="topbar-btns" id="tb-btns"></div>
-</div>
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="screen-login" class="screen">
+  <div class="card-wrap">
+    <div class="card">
+      <div class="icon">🚛</div>
+      <h1>Transport GR Note</h1>
+      <p class="sub">Goods Receipt Generator</p>
 
-<!-- =========== APP SCREEN =========== -->
-<div id="screen-app" class="screen">
-  <div class="app-wrap">
-
-    <!-- Token banner -->
-    <div style="text-align:center;padding:10px 0 4px;">
-      <div class="token-badge">🎫 Tokens remaining: <span id="token-display">0</span></div>
-    </div>
-
-    <div class="form-panel">
-      <!-- COMPANY -->
-      <div class="section-label">🏢 Transport Company</div>
-      <div class="form-grid">
-        <div class="full"><label>Company Name</label><input id="f_co_name" type="text" value="SHREE RAM TRANSPORT" oninput="live('d_company_name',this.value)"></div>
-        <div class="full"><label>Company Tagline / Type</label><input id="f_co_type" type="text" value="TRANSPORT CONTRACTOR AND COMMISSON AGENT" oninput="live('d_company_sub',this.value)"></div>
-        <div class="full"><label>Company Address</label><input id="f_co_addr" type="text" value="DEEPAK TYAGI MARKET NEAR MANAN DHAM MANDIR MEERUT ROAD GHAZIABAD" oninput="live('d_co_addr',this.value)"></div>
-        <div><label>PAN No.</label><input id="f_pan" type="text" value="AUAPS4302D"></div>
-        <div>
-          <label>Logo / Truck Photo</label>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:2px;">
-            <label class="logo-upload-btn" for="f_logo_file">📁 Choose</label>
-            <input type="file" id="f_logo_file" accept="image/*" style="display:none" onchange="previewLogo(this)">
-            <button type="button" onclick="clearLogo()" style="padding:5px 10px;font-size:11px;background:#ddd;color:#333;border-radius:4px;border:none;cursor:pointer;">✕ Clear</button>
-          </div>
-          <img id="logo_preview" style="max-width:80px;max-height:56px;border:1px solid #ccc;border-radius:3px;display:none;margin-top:6px;">
+      <!-- DISCLAIMER -->
+      <div class="disclaimer-box">
+        <div class="dtitle">⚠️ Legal Disclaimer</div>
+        <p>
+          Use of this Transport GR Note Generator is the <strong>sole responsibility of the user</strong>.
+          The owner and developer of this application shall not be held liable for any errors,
+          omissions, incorrect declarations, or misuse of generated documents.
+          All GR notes generated are subject to verification by the consignor and consignee.
+          By logging in, you confirm that you are an authorised user and agree to use
+          this tool in compliance with applicable laws and regulations.
+        </p>
+        <div class="accept-row">
+          <input type="checkbox" id="accept-check" onchange="toggleLoginBtn()">
+          <label for="accept-check">I have read and accept the above disclaimer</label>
         </div>
       </div>
 
-      <!-- GR DETAILS -->
-      <div class="section-label">📄 GR Details</div>
-      <div class="form-grid">
-        <div><label>GR Number</label><input id="f_gr" type="text" value="492"></div>
-        <div><label>Date</label><input id="f_date" type="date" value="2026-06-27"></div>
-        <div><label>From</label><input id="f_from" type="text" value="GZB"></div>
-        <div><label>To</label><input id="f_to" type="text" value="MEERUT"></div>
-        <div><label>Truck No.</label><input id="f_truck" type="text" value="UP14HT6353"></div>
-        <div><label>Owner Name</label><input id="f_owner" type="text" placeholder="Owner"></div>
-        <div><label>Driver Name</label><input id="f_driver" type="text" placeholder="Driver"></div>
-        <div><label>DL No.</label><input id="f_dl" type="text" placeholder="Licence no."></div>
+      <input class="pin-box" id="pin-input" type="password" maxlength="8" placeholder="Enter PIN"
+        oninput="clr('login-msg')" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn btn-gold btn-w" id="login-btn" onclick="doLogin()" disabled>Login</button>
+      <div class="msg" id="login-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ADMIN LOGIN (hidden — ?admin in URL or Ctrl+Shift+A) ══════════════ -->
+<div id="screen-adminlogin" class="screen">
+  <div class="card-wrap">
+    <div class="card">
+      <div class="icon">🔐</div>
+      <h1>Admin Panel</h1>
+      <p class="sub">Authorised personnel only</p>
+      <input class="pin-box" id="admin-pwd" type="password" maxlength="30" placeholder="Admin password"
+        oninput="clr('admin-login-msg')" onkeydown="if(event.key==='Enter')doAdminLogin()">
+      <button class="btn btn-red btn-w" onclick="doAdminLogin()">Access Admin Panel</button>
+      <div><button class="lnk" onclick="showScreen('screen-login')">← Back</button></div>
+      <div class="msg" id="admin-login-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PROFILE SETUP (first login for this user) ══════════════ -->
+<div id="screen-profile" class="screen">
+  <div class="card-wrap" style="align-items:flex-start;padding-top:40px;min-height:100vh;overflow-y:auto;">
+    <div class="profile-card">
+      <h2>🏢 Set Your Company Profile</h2>
+      <p style="font-size:12px;color:#888;margin-bottom:16px;">
+        These details are locked once saved and will appear on every GR you generate.
+        Contact admin to change them later.
+      </p>
+      <div class="g2">
+        <div class="f">
+          <label>Transporter / Company Name *</label>
+          <input id="p_co_name" placeholder="e.g. SHREE RAM TRANSPORT">
+        </div>
+        <div class="f">
+          <label>Company Tagline / Type *</label>
+          <input id="p_co_type" placeholder="e.g. TRANSPORT CONTRACTOR AND COMMISSION AGENT">
+        </div>
+        <div class="f">
+          <label>Company Address *</label>
+          <input id="p_co_addr" placeholder="Full address">
+        </div>
+        <div>
+          <label>PAN No. *</label>
+          <input id="p_pan" placeholder="e.g. AUAPS4302D">
+        </div>
+        <div>
+          <label>GSTIN (optional)</label>
+          <input id="p_gstin" placeholder="e.g. 09XXXX...">
+        </div>
+        <div>
+          <label>Last GR Number Used *</label>
+          <input id="p_last_gr" type="number" placeholder="e.g. 491 (next will be 492)">
+        </div>
+      </div>
+      <div style="margin-top:18px;">
+        <button class="btn btn-gold" onclick="saveProfile()">✔ Save Profile &amp; Continue</button>
+      </div>
+      <div class="msg" id="profile-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TOPBAR ══════════════ -->
+<div id="topbar" style="display:none;">
+  <span class="tb-co">🚛 GR Note Generator</span>
+  <span class="tb-user" id="tb-user"></span>
+  <div class="tb-btns" id="tb-btns"></div>
+</div>
+
+<!-- ══════════════ USER APP ══════════════ -->
+<div id="screen-app" class="screen">
+  <div class="wrap">
+    <div class="tok-bar">
+      <div class="tok-badge">🎫 Tokens remaining: <span id="tok-disp">0</span></div>
+    </div>
+
+    <div class="panel">
+
+      <!-- COMPANY (locked, read-only) -->
+      <div class="sec">🏢 Transport Company <span style="font-size:9px;color:#bbb;font-weight:400;margin-left:6px;">🔒 Pre-filled from your profile</span></div>
+      <div class="g2">
+        <div class="f field-locked">
+          <label>Company Name</label>
+          <input id="f_co_name" readonly>
+          <span class="lock-badge">🔒</span>
+        </div>
+        <div class="f field-locked">
+          <label>Tagline / Type</label>
+          <input id="f_co_type" readonly>
+          <span class="lock-badge">🔒</span>
+        </div>
+        <div class="f field-locked">
+          <label>Company Address</label>
+          <input id="f_co_addr" readonly>
+          <span class="lock-badge">🔒</span>
+        </div>
+        <div class="field-locked">
+          <label>PAN No.</label>
+          <input id="f_pan" readonly>
+          <span class="lock-badge">🔒</span>
+        </div>
+        <div class="field-locked">
+          <label>GSTIN</label>
+          <input id="f_gstin" readonly>
+          <span class="lock-badge">🔒</span>
+        </div>
       </div>
 
+      <!-- GR NUMBER (auto-running, non-editable) -->
+      <div class="sec">📄 GR Number <span style="font-size:9px;color:#bbb;font-weight:400;margin-left:6px;">Auto-running sequence</span></div>
+      <div class="g2">
+        <div>
+          <label>Current GR Number</label>
+          <div class="gr-counter">
+            <div class="gr-num-display" id="gr-num-display">—</div>
+          </div>
+          <div class="gr-meta" id="gr-meta">Next GR will be assigned when you print</div>
+        </div>
+        <div>
+          <label>Date</label>
+          <input id="f_date" type="date">
+        </div>
+      </div>
+
+      <!-- TRIP DETAILS -->
+      <div class="sec">🚛 Trip Details</div>
+      <div class="g2">
+        <div><label>From</label><input id="f_from" placeholder="Origin city"></div>
+        <div><label>To</label><input id="f_to" placeholder="Destination city"></div>
+        <div><label>Truck No.</label><input id="f_truck" placeholder="e.g. UP14HT6353"></div>
+        <div><label>Owner Name</label><input id="f_owner" placeholder="Vehicle owner"></div>
+        <div><label>Driver Name</label><input id="f_driver" placeholder="Driver"></div>
+        <div><label>DL No.</label><input id="f_dl" placeholder="Driving licence no."></div>
+      </div>
+
+      <!-- LOGO -->
+      <div class="sec">🖼 Logo / Truck Photo <span style="font-size:9px;color:#bbb;font-weight:400;">(optional)</span></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <label class="upl-lbl" for="f_logo">📁 Choose Image</label>
+        <input type="file" id="f_logo" accept="image/*" style="display:none" onchange="prevLogo(this)">
+        <button type="button" onclick="clearLogo()"
+          style="padding:6px 12px;font-size:12px;background:#ddd;color:#333;border-radius:4px;border:none;cursor:pointer;">✕ Clear</button>
+        <span id="logo-fname" style="font-size:11px;color:#aaa;">No file — default truck illustration used</span>
+      </div>
+      <img id="logo-prev" style="max-width:90px;max-height:66px;border:1px solid #ccc;border-radius:3px;display:none;margin-top:8px;">
+
       <!-- CONSIGNOR -->
-      <div class="section-label">👤 Consignor (Sender)</div>
-      <div class="form-grid">
-        <div><label>Name</label><input id="f_cs_name" type="text" value="SHREE MURTI DEVI ENTERPRISES"></div>
-        <div><label>GSTIN</label><input id="f_cs_gstin" type="text" value="09AFUFS0953H1ZE"></div>
-        <div class="full"><label>Address Line 1</label><input id="f_cs_addr1" type="text" value="148 A SHARFPURA 2 MIRAPUR KHURD TEHSIL JANSATH"></div>
-        <div class="full"><label>Address Line 2</label><input id="f_cs_addr2" type="text" value="KHUSI GIFT CENTRE MIRAPUR MUZAFFARNAGER"></div>
+      <div class="sec">👤 Consignor (Sender)</div>
+      <div class="g2">
+        <div><label>Name</label><input id="f_cs_name" placeholder="Consignor name"></div>
+        <div><label>GSTIN</label><input id="f_cs_gstin" placeholder="Consignor GSTIN"></div>
+        <div class="f"><label>Address Line 1</label><input id="f_cs_a1" placeholder="Address"></div>
+        <div class="f"><label>Address Line 2</label><input id="f_cs_a2" placeholder="Optional"></div>
       </div>
 
       <!-- CONSIGNEE -->
-      <div class="section-label">🏠 Consignee (Receiver)</div>
-      <div class="form-grid">
-        <div><label>Name</label><input id="f_ce_name" type="text" value="PASWARA PAPER LTD"></div>
-        <div><label>GSTIN</label><input id="f_ce_gstin" type="text" value="09AAACP9539Q1ZI"></div>
-        <div class="full"><label>Address Line 1</label><input id="f_ce_addr1" type="text" value="MOHIUDDINPUR DELHI ROAD MEERUT"></div>
-        <div class="full"><label>Address Line 2</label><input id="f_ce_addr2" type="text" placeholder="Optional"></div>
+      <div class="sec">🏠 Consignee (Receiver)</div>
+      <div class="g2">
+        <div><label>Name</label><input id="f_ce_name" placeholder="Consignee name"></div>
+        <div><label>GSTIN</label><input id="f_ce_gstin" placeholder="Consignee GSTIN"></div>
+        <div class="f"><label>Address Line 1</label><input id="f_ce_a1" placeholder="Address"></div>
+        <div class="f"><label>Address Line 2</label><input id="f_ce_a2" placeholder="Optional"></div>
       </div>
 
       <!-- GOODS -->
-      <div class="section-label">📦 Goods & Freight</div>
-      <div class="form-grid">
-        <div><label>Description</label><input id="f_desc" type="text" value="WASTE PAPER"></div>
-        <div><label>Weight (kg)</label><input id="f_weight" type="text" value="3980"></div>
-        <div><label>Rate</label><input id="f_rate" type="text" value="17.6"></div>
-        <div><label>Freight</label><input id="f_freight" type="text" placeholder="Amount"></div>
-        <div><label>GST %</label><input id="f_gst" type="text" placeholder="e.g. 5%"></div>
-        <div><label>Advance</label><input id="f_advance" type="text" placeholder="0"></div>
-        <div><label>S.T. (₹)</label><input id="f_st" type="text" value="40"></div>
-        <div><label>S.T. (Paise)</label><input id="f_st_paise" type="text" value="00"></div>
+      <div class="sec">📦 Goods &amp; Freight</div>
+      <div class="g2">
+        <div><label>Description of Goods</label><input id="f_desc" placeholder="e.g. WASTE PAPER"></div>
+        <div><label>Weight (kg)</label><input id="f_wt" placeholder="e.g. 3980"></div>
+        <div><label>Rate</label><input id="f_rate" placeholder="e.g. 17.6"></div>
+        <div><label>Freight</label><input id="f_freight" placeholder="Amount"></div>
+        <div><label>GST %</label><input id="f_gst" placeholder="e.g. 5%"></div>
+        <div><label>Advance</label><input id="f_adv" placeholder="0"></div>
+        <div><label>S.T. (₹)</label><input id="f_st" placeholder="0"></div>
+        <div><label>S.T. (Paise)</label><input id="f_stp" placeholder="00"></div>
       </div>
 
       <!-- PAYMENT -->
-      <div class="section-label">💳 Payment & References</div>
-      <div class="form-grid">
+      <div class="sec">💳 Payment &amp; References</div>
+      <div class="g2">
         <div>
           <label>Payment Status</label>
-          <select id="f_paid"><option>PAID</option><option>TO PAY</option><option>DUE</option></select>
+          <select id="f_pay"><option>PAID</option><option>TO PAY</option><option>DUE</option></select>
         </div>
-        <div><label>Bill No.</label><input id="f_bill_no" type="text" placeholder="Bill number"></div>
-        <div><label>Challan No.</label><input id="f_challan" type="text" placeholder="Challan number"></div>
-        <div><label>Permit No.</label><input id="f_permit" type="text" placeholder="Permit number"></div>
+        <div><label>Bill No.</label><input id="f_bill" placeholder="Bill number"></div>
+        <div><label>Challan No.</label><input id="f_challan" placeholder="Challan number"></div>
+        <div><label>Permit No.</label><input id="f_permit" placeholder="Permit number"></div>
       </div>
 
       <div class="btn-row">
-        <button class="btn btn-gold btn-sm" onclick="previewGR()">👁 Preview GR</button>
-        <button class="btn btn-gray btn-sm" onclick="resetForm()">↺ Reset</button>
+        <button class="btn btn-gold btn-sm" onclick="prevGR()">👁 Preview GR</button>
+        <button class="btn btn-gray btn-sm" onclick="resetForm()">↺ Reset Fields</button>
       </div>
-    </div><!-- /form-panel -->
+    </div>
 
-    <!-- GR PREVIEW -->
+    <!-- GR DOCUMENT PREVIEW -->
     <div id="gr-preview">
       <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
-        <button class="btn btn-green btn-sm" onclick="confirmPrint()">🖨 Print GR (uses 1 token)</button>
+        <button class="btn btn-green btn-sm" onclick="confirmPrint()">🖨 Print GR &nbsp;(uses 1 token)</button>
         <button class="btn btn-gray btn-sm" onclick="document.getElementById('gr-preview').style.display='none'">✕ Close</button>
       </div>
       <div id="gr-doc">
-        <div class="pan-badge" id="d_pan">PAN NO. AUAPS4302D</div>
-        <div class="doc-header">
-          <!-- LOGO -->
-          <div class="logo-box">
-            <svg id="d_logo_svg" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" width="96" height="74">
+        <div class="pan-b" id="d_pan">PAN NO.</div>
+        <div class="dh">
+          <div class="logo-b">
+            <svg id="d_svg" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" width="96" height="74">
               <rect width="200" height="130" fill="#ddeeff"/>
               <rect y="98" width="200" height="32" fill="#888"/>
               <rect y="108" width="200" height="4" fill="#aaa" opacity=".4"/>
@@ -324,8 +456,8 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
               <line x1="40" y1="52" x2="40" y2="98" stroke="#c02010" stroke-width="1.5"/>
               <line x1="70" y1="52" x2="70" y2="98" stroke="#c02010" stroke-width="1.5"/>
               <line x1="100" y1="52" x2="100" y2="98" stroke="#c02010" stroke-width="1.5"/>
-              <text x="64" y="78" text-anchor="middle" font-family="Arial" font-size="8" font-weight="900" fill="#fff" id="svg_co_name">SHREE RAM</text>
-              <text x="64" y="89" text-anchor="middle" font-family="Arial" font-size="7" fill="#ffd">TRANSPORT</text>
+              <text x="64" y="78" text-anchor="middle" font-family="Arial" font-size="8" font-weight="900" fill="#fff" id="svg_name">TRANSPORT</text>
+              <text x="64" y="89" text-anchor="middle" font-family="Arial" font-size="7" fill="#ffd">GR NOTE</text>
               <rect x="128" y="62" width="52" height="36" rx="3" fill="#c02010"/>
               <path d="M128,62 Q140,44 172,52 L180,62 Z" fill="#d42010"/>
               <path d="M138,62 Q148,50 170,54 L174,62 Z" fill="#aaddff" opacity=".85"/>
@@ -352,41 +484,41 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
             </svg>
             <img id="d_logo_img" style="display:none;width:100%;height:100%;object-fit:contain;">
           </div>
-          <div class="company-block">
-            <div class="company-name" id="d_company_name">SHREE RAM TRANSPORT</div>
-            <div class="company-sub" id="d_company_sub">TRANSPORT CONTRACTOR AND COMMISSON AGENT</div>
+          <div class="co-blk">
+            <div class="co-nm" id="d_co_name"></div>
+            <div class="co-sub" id="d_co_sub"></div>
           </div>
-          <div class="gr-no">G.R NO. <span id="d_gr">492</span></div>
+          <div class="gr-no-doc">G.R NO. <span id="d_gr"></span></div>
         </div>
-        <div class="address-line" id="d_co_addr">DEEPAK TYAGI MARKET NEAR MANAN DHAM MANDIR MEERUT ROAD GHAZIABAD</div>
-        <div class="meta-row">
-          <span>DATE: <strong id="d_date">27-06-2026</strong></span>
-          <span>&nbsp;|&nbsp;FROM: <strong id="d_from">GZB</strong></span>
-          <span>&nbsp;|&nbsp;TO: <strong id="d_to">MEERUT</strong></span>
-          <span class="track">TRACK NO: <span id="d_truck">UP14HT6353</span></span>
+        <div class="addr-ln" id="d_co_addr"></div>
+        <div class="meta">
+          <span>DATE: <strong id="d_date"></strong></span>
+          <span>&nbsp;|&nbsp;FROM: <strong id="d_from"></strong></span>
+          <span>&nbsp;|&nbsp;TO: <strong id="d_to"></strong></span>
+          <span class="trk">TRACK NO: <span id="d_truck"></span></span>
         </div>
-        <div class="owner-row">
+        <div class="odr">
           <div>OWNER<br><strong id="d_owner">&nbsp;</strong></div>
           <div>DRIVER NAME<br><strong id="d_driver">&nbsp;</strong></div>
           <div>DL<br><strong id="d_dl">&nbsp;</strong></div>
         </div>
-        <div class="party-block">
-          <div class="party-col">
-            <span class="party-title">Consignor's Name &amp; Add.. <span id="d_cs_name">SHREE MURTI DEVI ENTERPRISES</span></span>
-            <div id="d_cs_addr1" style="margin-top:2px;font-size:11px;">148 A SHARFPURA 2 MIRAPUR KHURD TEHSIL JANSATH</div>
-            <div id="d_cs_addr2" style="font-size:11px;">KHUSI GIFT CENTRE MIRAPUR MUZAFFARNAGER</div>
+        <div class="pb">
+          <div class="pc">
+            <span class="pt">Consignor's Name &amp; Add.. <span id="d_cs_name"></span></span>
+            <div id="d_cs_a1" style="margin-top:2px;"></div>
+            <div id="d_cs_a2"></div>
           </div>
-          <div class="party-col">
-            <span class="party-title">Consignee Name &amp; Add ........ <span id="d_ce_name">PASWARA PAPER LTD</span></span>
-            <div id="d_ce_addr1" style="margin-top:2px;font-size:11px;">MOHIUDDINPUR DELHI ROAD MEERUT</div>
-            <div id="d_ce_addr2" style="font-size:11px;">&nbsp;</div>
+          <div class="pc">
+            <span class="pt">Consignee Name &amp; Add ........ <span id="d_ce_name"></span></span>
+            <div id="d_ce_a1" style="margin-top:2px;"></div>
+            <div id="d_ce_a2">&nbsp;</div>
           </div>
         </div>
-        <div class="gstin-row">
-          <div class="gstin-col">GSTIN NO.......... <span id="d_cs_gstin">09AFUFS0953H1ZE</span></div>
-          <div class="gstin-col">GSTIN NO .................. <span id="d_ce_gstin">09AAACP9539Q1ZI</span></div>
+        <div class="gr">
+          <div class="gc">GSTIN NO.......... <span id="d_cs_gstin"></span></div>
+          <div class="gc">GSTIN NO .................. <span id="d_ce_gstin"></span></div>
         </div>
-        <table class="goods-table">
+        <table class="gt">
           <thead><tr>
             <th style="width:38px;">Pkg.</th>
             <th style="width:33%;">Description</th>
@@ -397,14 +529,12 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
           </tr></thead>
           <tbody><tr style="height:120px;">
             <td style="text-align:center;"></td>
-            <td>
-              <strong id="d_desc">WASTE PAPER</strong>
-              <div class="carrier-note">CARRIER IS NOT RESPONSIBLE BRACKGE AND DAMAGE</div>
-            </td>
-            <td style="text-align:center;vertical-align:middle;"><strong id="d_weight">3980</strong></td>
+            <td><strong id="d_desc"></strong>
+              <div class="cn">CARRIER IS NOT RESPONSIBLE FOR BREAKAGE AND DAMAGE</div></td>
+            <td style="text-align:center;vertical-align:middle;"><strong id="d_wt"></strong></td>
             <td style="text-align:center;vertical-align:top;">
-              <div class="rate-inner">
-                <div><strong id="d_rate">17.6</strong></div>
+              <div class="rti">
+                <div><strong id="d_rate"></strong></div>
                 <div>KANTA</div>
                 <div>GST@ <span id="d_gst"></span></div>
                 <div>ADVANCE</div>
@@ -413,86 +543,79 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
             </td>
             <td style="text-align:center;vertical-align:top;">
               <div id="d_freight" style="margin-bottom:44px;"></div>
-              <div>&nbsp;</div><div id="d_advance"></div>
-              <div style="margin-top:4px;"><strong><span id="d_st">40</span>&nbsp;<span id="d_st_paise">00</span></strong></div>
+              <div>&nbsp;</div>
+              <div id="d_adv"></div>
+              <div style="margin-top:4px;"><strong><span id="d_st"></span>&nbsp;<span id="d_stp"></span></strong></div>
             </td>
             <td style="vertical-align:top;">
-              <div class="paid-stamp" id="d_paid">PAID</div>
-              <div class="remark-inner" style="margin-top:8px;">
-                <div class="row"><span>BILL NO</span><span id="d_bill_no">.............</span></div>
-                <div class="row"><span>CHALLAN NO</span><span id="d_challan">.............</span></div>
-                <div class="row"><span>PERMIT NO</span><span id="d_permit">.............</span></div>
+              <div class="ps" id="d_pay">PAID</div>
+              <div class="ri" style="margin-top:8px;">
+                <div class="rr"><span>BILL NO</span><span id="d_bill">.............</span></div>
+                <div class="rr"><span>CHALLAN NO</span><span id="d_challan">.............</span></div>
+                <div class="rr"><span>PERMIT NO</span><span id="d_permit">.............</span></div>
               </div>
             </td>
           </tr></tbody>
         </table>
-        <div class="disclaimer">
+        <div class="disc-doc">
           CONSIGNEE SHOULD CHECK THE GOODS WHILE TAKING DELIVERY. CONSIGNEE IS RESPONSIBLE FOR ILLEGAL GOODS &amp; WRONG DECLARATION.
           DESTINATION OCTROI WILL BE CHARGED FROM THE CONSIGNEE.
         </div>
-        <div class="sign-row">
-          <div>SING. OF CONSIGNEE</div>
-          <div>SING. OF DRIVER</div>
-          <div>SING. OF CLARK</div>
+        <div class="srow">
+          <div>SING. OF CONSIGNEE</div><div>SING. OF DRIVER</div><div>SING. OF CLARK</div>
         </div>
-      </div><!-- /gr-doc -->
-    </div><!-- /gr-preview -->
-  </div><!-- /app-wrap -->
-</div><!-- /screen-app -->
-
-<!-- =========== ADMIN SCREEN =========== -->
-<div id="screen-admin" class="screen">
-  <div class="admin-wrap">
-    <div class="admin-card">
-      <h3>➕ Add / Update User</h3>
-      <div class="inline-form">
-        <div><label>PIN (unique)</label><input id="a_pin" type="text" placeholder="e.g. 1234" style="width:120px;"></div>
-        <div><label>Name</label><input id="a_name" type="text" placeholder="User name" class="wide"></div>
-        <div><label>Phone/Email</label><input id="a_contact" type="text" placeholder="Contact" class="wide"></div>
-        <div><label>Tokens to Add</label><input id="a_tokens" type="number" placeholder="e.g. 50" style="width:100px;"></div>
-        <div style="padding-top:18px;">
-          <button class="btn btn-green btn-sm" onclick="addUser()">✔ Save User</button>
-        </div>
-      </div>
-      <div class="success-msg" id="admin-user-msg"></div>
-    </div>
-
-    <div class="admin-card">
-      <h3>🎫 Add Tokens to Existing User</h3>
-      <div class="inline-form">
-        <div><label>User PIN</label><input id="a_topup_pin" type="text" placeholder="PIN" style="width:120px;"></div>
-        <div><label>Tokens to Add</label><input id="a_topup_tokens" type="number" placeholder="e.g. 20" style="width:120px;"></div>
-        <div style="padding-top:18px;">
-          <button class="btn btn-gold btn-sm" onclick="topupTokens()">➕ Add Tokens</button>
-        </div>
-      </div>
-      <div class="success-msg" id="admin-topup-msg"></div>
-    </div>
-
-    <div class="admin-card">
-      <h3>👥 All Users</h3>
-      <button class="btn btn-gray btn-sm" onclick="loadUsers()" style="margin-bottom:12px;">🔄 Refresh</button>
-      <div id="users-table-wrap">
-        <p style="color:#aaa;font-size:13px;">Click Refresh to load users from Google Sheet</p>
-      </div>
-    </div>
-
-    <div class="admin-card">
-      <h3>📋 Recent GR Logs (Last 20)</h3>
-      <button class="btn btn-gray btn-sm" onclick="loadLogs()" style="margin-bottom:12px;">🔄 Refresh Logs</button>
-      <div id="logs-table-wrap">
-        <p style="color:#aaa;font-size:13px;">Click Refresh to load GR records from Google Sheet</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- =========== CONFIRM MODAL =========== -->
-<div class="modal-overlay" id="modal-confirm">
-  <div class="modal-box">
+<!-- ══════════════ ADMIN PANEL ══════════════ -->
+<div id="screen-admin" class="screen">
+  <div class="aw">
+    <div class="apanel">
+      <h3>➕ Add New User</h3>
+      <div class="irow">
+        <div><label>PIN</label><input id="a_pin" placeholder="e.g. 1234" style="width:110px;"></div>
+        <div><label>Name</label><input id="a_name" placeholder="User name" style="width:180px;"></div>
+        <div><label>Phone / Email</label><input id="a_contact" placeholder="Contact" style="width:180px;"></div>
+        <div><label>Initial Tokens</label><input id="a_tokens" type="number" placeholder="50" style="width:100px;"></div>
+        <div style="padding-top:17px;"><button class="btn btn-green btn-sm" onclick="addUser()">✔ Save User</button></div>
+      </div>
+      <div class="msg" id="a-user-msg"></div>
+    </div>
+
+    <div class="apanel">
+      <h3>🎫 Top-Up Tokens</h3>
+      <div class="irow">
+        <div><label>User PIN</label><input id="a_topup_pin" placeholder="PIN" style="width:120px;"></div>
+        <div><label>Tokens to Add</label><input id="a_topup_tok" type="number" placeholder="20" style="width:120px;"></div>
+        <div style="padding-top:17px;"><button class="btn btn-gold btn-sm" onclick="topup()">➕ Add Tokens</button></div>
+      </div>
+      <div class="msg" id="a-topup-msg"></div>
+    </div>
+
+    <div class="apanel">
+      <h3>👥 All Users</h3>
+      <button class="btn btn-gray btn-sm" onclick="loadUsers()" style="margin-bottom:12px;">🔄 Refresh</button>
+      <div id="users-wrap"><p style="color:#aaa;font-size:13px;">Click Refresh to load.</p></div>
+    </div>
+
+    <div class="apanel">
+      <h3>📋 Recent GR Logs</h3>
+      <button class="btn btn-gray btn-sm" onclick="loadLogs()" style="margin-bottom:12px;">🔄 Refresh Logs</button>
+      <div id="logs-wrap"><p style="color:#aaa;font-size:13px;">Click Refresh to load.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PRINT CONFIRM MODAL ══════════════ -->
+<div class="mo" id="modal">
+  <div class="mb">
     <h3>🖨 Confirm Print</h3>
-    <p>This will use <strong>1 token</strong> from your balance and log this GR to the master sheet.<br><br>Current balance: <strong id="modal-token-count">0</strong> tokens</p>
-    <div class="modal-btns">
+    <p>GR No. <strong id="modal-grno"></strong> will be generated.<br>
+    This uses <strong>1 token</strong> and logs to master sheet.<br><br>
+    Balance: <strong id="modal-tok">0</strong> tokens remaining.</p>
+    <div class="mbtns">
       <button class="btn btn-green btn-sm" onclick="doPrint()">Yes, Print</button>
       <button class="btn btn-gray btn-sm" onclick="closeModal()">Cancel</button>
     </div>
@@ -500,365 +623,479 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 </div>
 
 <script>
-// =============================================
-//  CONFIG — PASTE YOUR APPS SCRIPT URL HERE
-// =============================================
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvYETZSAZ9ZF6nTrLnqE1cwiZlH1shptp-fzqJxFTp5IYHt_awNTtFFmfIGxOo3uid6Q/exec';
-var ADMIN_PASSWORD  = 'admin@123'; // Change this!
+// ══════════════════════════════════════════════════════
+//  STATE — nothing sensitive hardcoded here
+// ══════════════════════════════════════════════════════
+var API      = '';    // loaded from localStorage
+var USER     = null;  // { pin, name, tokens, profile:{coName,coType,coAddr,pan,gstin,lastGR} }
+var LOGO     = null;  // base64
+var NEXT_GR  = null;  // integer, computed after profile loaded
 
-// =============================================
-//  STATE
-// =============================================
-var currentUser = null; // { pin, name, contact, tokens }
-var _logoDataUrl = null;
+// ══════════════════════════════════════════════════════
+//  BOOT — check URL for ?admin, then check API config
+// ══════════════════════════════════════════════════════
+(function boot() {
+  // Secret admin route via URL param
+  if (window.location.search.indexOf('admin') !== -1) {
+    // Remove param from URL bar without reload
+    history.replaceState(null,'', window.location.pathname);
+    var saved = localStorage.getItem('gr_api_url') || '';
+    if (saved.indexOf('script.google.com') !== -1) {
+      API = saved;
+      showScreen('screen-adminlogin');
+    } else {
+      showScreen('screen-setup');
+    }
+    return;
+  }
 
-// =============================================
+  var saved = localStorage.getItem('gr_api_url') || '';
+  if (saved.indexOf('script.google.com') !== -1) {
+    API = saved;
+    showScreen('screen-login');
+  } else {
+    showScreen('screen-setup');
+  }
+
+  // Also listen for Ctrl+Shift+A on login screen as backup
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+      if (document.getElementById('screen-login').classList.contains('active')) {
+        showScreen('screen-adminlogin');
+      }
+    }
+  });
+})();
+
+// ══════════════════════════════════════════════════════
+//  SETUP
+// ══════════════════════════════════════════════════════
+function saveSetup() {
+  var url = document.getElementById('setup-url').value.trim();
+  if (url.indexOf('script.google.com') === -1) {
+    msg('setup-msg','Please paste a valid Apps Script URL.','err'); return;
+  }
+  localStorage.setItem('gr_api_url', url);
+  API = url;
+  msg('setup-msg','✅ Saved! Loading...','ok');
+  setTimeout(function(){ showScreen('screen-login'); }, 700);
+}
+
+// ══════════════════════════════════════════════════════
 //  SCREEN ROUTER
-// =============================================
+// ══════════════════════════════════════════════════════
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-  var el = document.getElementById(id);
-  if (el) el.classList.add('active');
+  document.querySelectorAll('.screen').forEach(function(s){
+    s.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
 
   var tb = document.getElementById('topbar');
-  var tbUser = document.getElementById('tb-user');
-  var tbBtns = document.getElementById('tb-btns');
-
   if (id === 'screen-app') {
     tb.style.display = 'flex';
-    tbUser.textContent = '👤 ' + currentUser.name + ' | 🎫 Tokens: ' + currentUser.tokens;
-    tbBtns.innerHTML = '<button class="btn btn-red btn-sm" onclick="logout()">Logout</button>';
+    document.getElementById('tb-user').textContent =
+      '👤 ' + USER.name + '   |   🎫 ' + USER.tokens + ' tokens';
+    document.getElementById('tb-btns').innerHTML =
+      '<button class="btn btn-gray btn-sm" onclick="showScreen(\'screen-profile-edit\')" style="display:none">Profile</button>' +
+      '<button class="btn btn-red btn-sm" onclick="logout()">Logout</button>';
   } else if (id === 'screen-admin') {
     tb.style.display = 'flex';
-    tbUser.textContent = '🔐 Admin Mode';
-    tbBtns.innerHTML = '<button class="btn btn-red btn-sm" onclick="logout()">Logout</button>';
+    document.getElementById('tb-user').textContent = '🔐 Admin Mode';
+    document.getElementById('tb-btns').innerHTML =
+      '<button class="btn btn-red btn-sm" onclick="logout()">← Exit Admin</button>';
   } else {
     tb.style.display = 'none';
   }
 }
 
-// =============================================
-//  LOGIN
-// =============================================
-function clearLoginError() { document.getElementById('login-error').textContent = ''; }
-function clearAdminLoginError() { document.getElementById('admin-login-error').textContent = ''; }
+// ══════════════════════════════════════════════════════
+//  DISCLAIMER checkbox
+// ══════════════════════════════════════════════════════
+function toggleLoginBtn() {
+  var checked = document.getElementById('accept-check').checked;
+  document.getElementById('login-btn').disabled = !checked;
+}
 
-function showAdminLogin() { showScreen('screen-adminlogin'); }
+// ══════════════════════════════════════════════════════
+//  MESSAGES
+// ══════════════════════════════════════════════════════
+function msg(id, text, type) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  el.className = 'msg ' + (type || 'ok');
+}
+function clr(id) {
+  var el = document.getElementById(id);
+  if (el) { el.className = 'msg'; el.textContent = ''; }
+}
 
+// ══════════════════════════════════════════════════════
+//  API HELPERS
+// ══════════════════════════════════════════════════════
+function apiGet(params, cb) {
+  var url = API + '?_=' + Date.now();
+  Object.keys(params).forEach(function(k){
+    url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  });
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(cb)
+    .catch(function(){ cb({ success:false, message:'Network error. Check your Apps Script URL and redeploy if needed.' }); });
+}
+function apiPost(data, cb) {
+  fetch(API, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
+  })
+  .then(function(r){ return r.json(); })
+  .then(cb)
+  .catch(function(){ cb({ success:false, message:'Network error.' }); });
+}
+
+// ══════════════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════════════
 function doLogin() {
   var pin = document.getElementById('pin-input').value.trim();
-  if (!pin) { document.getElementById('login-error').textContent = 'Please enter your PIN.'; return; }
-  if (!checkConfig()) return;
-
-  document.getElementById('login-error').textContent = '⏳ Verifying...';
-
-  callAPI({ action: 'getUser', pin: pin }, function(res) {
+  if (!pin) { msg('login-msg','Enter your PIN.','err'); return; }
+  if (!document.getElementById('accept-check').checked) {
+    msg('login-msg','Please accept the disclaimer first.','err'); return;
+  }
+  msg('login-msg','⏳ Verifying...','ok');
+  apiGet({ action:'getUser', pin:pin }, function(res) {
     if (res.success) {
-      currentUser = res.user;
-      document.getElementById('token-display').textContent = currentUser.tokens;
-      showScreen('screen-app');
+      USER = res.user;
       document.getElementById('pin-input').value = '';
+      clr('login-msg');
+      // Check if profile is set
+      if (!USER.profile || !USER.profile.coName) {
+        showScreen('screen-profile');
+      } else {
+        loadProfileIntoForm();
+        showScreen('screen-app');
+      }
     } else {
-      document.getElementById('login-error').textContent = res.message || 'Invalid PIN.';
+      msg('login-msg', res.message || 'Invalid PIN.', 'err');
     }
   });
 }
 
 function doAdminLogin() {
-  var pwd = document.getElementById('admin-pwd-input').value;
-  if (pwd === ADMIN_PASSWORD) {
-    document.getElementById('admin-pwd-input').value = '';
-    showScreen('screen-admin');
-  } else {
-    document.getElementById('admin-login-error').textContent = 'Wrong password.';
-  }
+  var pwd = document.getElementById('admin-pwd').value.trim();
+  if (!pwd) { msg('admin-login-msg','Enter password.','err'); return; }
+  msg('admin-login-msg','⏳ Verifying...','ok');
+  apiGet({ action:'adminLogin', password:pwd }, function(res) {
+    if (res.success) {
+      document.getElementById('admin-pwd').value = '';
+      clr('admin-login-msg');
+      showScreen('screen-admin');
+    } else {
+      msg('admin-login-msg', res.message || 'Wrong password.', 'err');
+    }
+  });
 }
 
 function logout() {
-  currentUser = null;
+  USER = null; LOGO = null; NEXT_GR = null;
+  document.getElementById('accept-check').checked = false;
+  document.getElementById('login-btn').disabled = true;
   showScreen('screen-login');
 }
 
-// =============================================
-//  APPS SCRIPT API CALL
-// =============================================
-function checkConfig() {
-  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-    alert('⚠️ Please open this HTML file and paste your Google Apps Script URL into the APPS_SCRIPT_URL variable at the top of the <script> section.');
-    return false;
+// ══════════════════════════════════════════════════════
+//  PROFILE SETUP (first-time per user)
+// ══════════════════════════════════════════════════════
+function saveProfile() {
+  var coName  = document.getElementById('p_co_name').value.trim();
+  var coType  = document.getElementById('p_co_type').value.trim();
+  var coAddr  = document.getElementById('p_co_addr').value.trim();
+  var pan     = document.getElementById('p_pan').value.trim();
+  var gstin   = document.getElementById('p_gstin').value.trim();
+  var lastGR  = parseInt(document.getElementById('p_last_gr').value) || 0;
+
+  if (!coName || !coType || !coAddr || !pan) {
+    msg('profile-msg','Please fill all required fields.','err'); return;
   }
-  return true;
-}
 
-function callAPI(params, callback) {
-  var url = APPS_SCRIPT_URL + '?cb=' + Date.now();
-  Object.keys(params).forEach(function(k){ url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); });
+  msg('profile-msg','⏳ Saving...','ok');
 
-  fetch(url)
-    .then(function(r){ return r.json(); })
-    .then(function(data){ callback(data); })
-    .catch(function(err){
-      console.error(err);
-      callback({ success: false, message: 'Network error. Check Apps Script URL and deployment.' });
-    });
-}
-
-function callAPIPost(params, callback) {
-  if (!checkConfig()) return;
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(params)
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){ callback(data); })
-  .catch(function(err){
-    console.error(err);
-    callback({ success: false, message: 'Network error.' });
+  apiPost({
+    action:'saveProfile', pin:USER.pin,
+    coName:coName, coType:coType, coAddr:coAddr,
+    pan:pan, gstin:gstin, lastGR:lastGR
+  }, function(res) {
+    if (res.success) {
+      USER.profile = { coName:coName, coType:coType, coAddr:coAddr,
+                       pan:pan, gstin:gstin, lastGR:lastGR };
+      loadProfileIntoForm();
+      showScreen('screen-app');
+    } else {
+      msg('profile-msg', res.message || 'Save failed.', 'err');
+    }
   });
 }
 
-// =============================================
+function loadProfileIntoForm() {
+  var p = USER.profile;
+  // Fill locked fields
+  document.getElementById('f_co_name').value = p.coName || '';
+  document.getElementById('f_co_type').value = p.coType || '';
+  document.getElementById('f_co_addr').value = p.coAddr || '';
+  document.getElementById('f_pan').value     = p.pan    || '';
+  document.getElementById('f_gstin').value   = p.gstin  || '';
+
+  // Set GR counter
+  NEXT_GR = (parseInt(p.lastGR) || 0) + 1;
+  document.getElementById('gr-num-display').textContent = NEXT_GR;
+  document.getElementById('gr-meta').textContent =
+    'Last used: ' + (p.lastGR || 0) + ' → This GR will be: ' + NEXT_GR;
+
+  // Set SVG truck label
+  var t = document.getElementById('svg_name');
+  if (t) t.textContent = (p.coName||'').split(' ')[0] || 'TRANSPORT';
+
+  // Set today's date
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2,'0');
+  var mm = String(today.getMonth()+1).padStart(2,'0');
+  var yyyy = today.getFullYear();
+  document.getElementById('f_date').value = yyyy+'-'+mm+'-'+dd;
+
+  // Update topbar
+  document.getElementById('tb-user').textContent =
+    '👤 ' + USER.name + '   |   🎫 ' + USER.tokens + ' tokens';
+}
+
+// ══════════════════════════════════════════════════════
 //  LOGO
-// =============================================
-function previewLogo(input) {
+// ══════════════════════════════════════════════════════
+function prevLogo(input) {
   if (!input.files || !input.files[0]) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    _logoDataUrl = e.target.result;
-    var prev = document.getElementById('logo_preview');
-    prev.src = _logoDataUrl; prev.style.display = 'block';
+  document.getElementById('logo-fname').textContent = input.files[0].name;
+  var r = new FileReader();
+  r.onload = function(e) {
+    LOGO = e.target.result;
+    var p = document.getElementById('logo-prev');
+    p.src = LOGO; p.style.display = 'block';
   };
-  reader.readAsDataURL(input.files[0]);
+  r.readAsDataURL(input.files[0]);
 }
 function clearLogo() {
-  _logoDataUrl = null;
-  document.getElementById('f_logo_file').value = '';
-  var p = document.getElementById('logo_preview'); p.src=''; p.style.display='none';
-  document.getElementById('d_logo_svg').style.display = '';
+  LOGO = null;
+  document.getElementById('f_logo').value = '';
+  document.getElementById('logo-fname').textContent = 'No file — default truck illustration used';
+  var p = document.getElementById('logo-prev'); p.src=''; p.style.display='none';
+  document.getElementById('d_svg').style.display = '';
   var i = document.getElementById('d_logo_img'); i.style.display='none'; i.src='';
 }
 function applyLogo() {
-  var svg = document.getElementById('d_logo_svg');
+  var svg = document.getElementById('d_svg');
   var img = document.getElementById('d_logo_img');
-  if (_logoDataUrl) {
-    svg.style.display = 'none'; img.src = _logoDataUrl; img.style.display = 'block';
+  if (LOGO) {
+    svg.style.display='none'; img.src=LOGO; img.style.display='block';
   } else {
-    var t = document.getElementById('svg_co_name');
-    if (t) t.textContent = (document.getElementById('f_co_name').value||'').split(' ')[0] || 'TRANSPORT';
-    svg.style.display = ''; img.style.display = 'none';
+    svg.style.display=''; img.style.display='none';
   }
 }
 
-// =============================================
-//  LIVE UPDATE (company name preview)
-// =============================================
-function live(id, val) {
-  var el = document.getElementById(id);
-  if (el) el.textContent = val || '\u00a0';
-}
-
-// =============================================
+// ══════════════════════════════════════════════════════
 //  GR FORM
-// =============================================
-function gv(id) { return document.getElementById(id).value.trim(); }
-function set(id, val) { var el=document.getElementById(id); if(el) el.textContent=val||'\u00a0'; }
-function fmtDate(d) { if(!d) return ''; var p=d.split('-'); return p[2]+'-'+p[1]+'-'+p[0]; }
+// ══════════════════════════════════════════════════════
+function gv(id){ var el=document.getElementById(id); return el ? el.value.trim() : ''; }
+function st(id,val){ var el=document.getElementById(id); if(el) el.textContent=val||'\u00a0'; }
+function fd(d){ if(!d) return ''; var p=d.split('-'); return p[2]+'-'+p[1]+'-'+p[0]; }
+function dots(){ return '…………'; }
 
-function previewGR() {
-  set('d_pan',          'PAN NO. '+gv('f_pan'));
-  set('d_company_name', gv('f_co_name')||'YOUR TRANSPORT CO.');
-  set('d_company_sub',  gv('f_co_type'));
-  set('d_co_addr',      gv('f_co_addr'));
-  set('d_gr',           gv('f_gr'));
-  set('d_date',         fmtDate(gv('f_date')));
-  set('d_from',         gv('f_from'));
-  set('d_to',           gv('f_to'));
-  set('d_truck',        gv('f_truck'));
-  set('d_owner',        gv('f_owner'));
-  set('d_driver',       gv('f_driver'));
-  set('d_dl',           gv('f_dl'));
-  set('d_cs_name',      gv('f_cs_name'));
-  set('d_cs_addr1',     gv('f_cs_addr1'));
-  set('d_cs_addr2',     gv('f_cs_addr2'));
-  set('d_cs_gstin',     gv('f_cs_gstin'));
-  set('d_ce_name',      gv('f_ce_name'));
-  set('d_ce_addr1',     gv('f_ce_addr1'));
-  set('d_ce_addr2',     gv('f_ce_addr2'));
-  set('d_ce_gstin',     gv('f_ce_gstin'));
-  set('d_desc',         gv('f_desc'));
-  set('d_weight',       gv('f_weight'));
-  set('d_rate',         gv('f_rate'));
-  set('d_freight',      gv('f_freight'));
-  set('d_gst',          gv('f_gst'));
-  set('d_advance',      gv('f_advance'));
-  set('d_st',           gv('f_st'));
-  set('d_st_paise',     gv('f_st_paise'));
-  set('d_paid',         gv('f_paid'));
-  set('d_bill_no',      gv('f_bill_no')  || '\u2026\u2026\u2026\u2026\u2026');
-  set('d_challan',      gv('f_challan')  || '\u2026\u2026\u2026\u2026\u2026');
-  set('d_permit',       gv('f_permit')   || '\u2026\u2026\u2026\u2026\u2026');
+function prevGR() {
+  if (!NEXT_GR) { alert('Profile not loaded. Please re-login.'); return; }
+  var p = USER.profile;
+  st('d_pan',      'PAN NO. '+(p.pan||''));
+  st('d_co_name',  p.coName||'');
+  st('d_co_sub',   p.coType||'');
+  st('d_co_addr',  p.coAddr||'');
+  st('d_gr',       NEXT_GR);
+  st('d_date',     fd(gv('f_date')));
+  st('d_from',     gv('f_from'));
+  st('d_to',       gv('f_to'));
+  st('d_truck',    gv('f_truck'));
+  st('d_owner',    gv('f_owner'));
+  st('d_driver',   gv('f_driver'));
+  st('d_dl',       gv('f_dl'));
+  st('d_cs_name',  gv('f_cs_name'));
+  st('d_cs_a1',    gv('f_cs_a1'));
+  st('d_cs_a2',    gv('f_cs_a2'));
+  st('d_cs_gstin', gv('f_cs_gstin'));
+  st('d_ce_name',  gv('f_ce_name'));
+  st('d_ce_a1',    gv('f_ce_a1'));
+  st('d_ce_a2',    gv('f_ce_a2'));
+  st('d_ce_gstin', gv('f_ce_gstin'));
+  st('d_desc',     gv('f_desc'));
+  st('d_wt',       gv('f_wt'));
+  st('d_rate',     gv('f_rate'));
+  st('d_freight',  gv('f_freight'));
+  st('d_gst',      gv('f_gst'));
+  st('d_adv',      gv('f_adv'));
+  st('d_st',       gv('f_st')||'0');
+  st('d_stp',      gv('f_stp')||'00');
+  st('d_pay',      gv('f_pay'));
+  st('d_bill',     gv('f_bill')    || dots());
+  st('d_challan',  gv('f_challan') || dots());
+  st('d_permit',   gv('f_permit')  || dots());
   applyLogo();
-  var p = document.getElementById('gr-preview');
-  p.style.display = 'block';
-  p.scrollIntoView({ behavior:'smooth' });
+  var el = document.getElementById('gr-preview');
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior:'smooth' });
 }
 
 function resetForm() {
-  document.querySelectorAll('#screen-app input, #screen-app select').forEach(function(el){
-    if (el.type==='date') el.value='';
-    else if (el.type==='file') el.value='';
-    else if (el.tagName==='SELECT') el.selectedIndex=0;
-    else el.value='';
+  ['f_from','f_to','f_truck','f_owner','f_driver','f_dl',
+   'f_cs_name','f_cs_gstin','f_cs_a1','f_cs_a2',
+   'f_ce_name','f_ce_gstin','f_ce_a1','f_ce_a2',
+   'f_desc','f_wt','f_rate','f_freight','f_gst','f_adv','f_st','f_stp',
+   'f_bill','f_challan','f_permit'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
   });
+  document.getElementById('f_pay').selectedIndex = 0;
+  document.getElementById('f_logo').value = '';
   clearLogo();
   document.getElementById('gr-preview').style.display='none';
 }
 
-// =============================================
-//  PRINT WITH TOKEN
-// =============================================
+// ══════════════════════════════════════════════════════
+//  PRINT + TOKEN
+// ══════════════════════════════════════════════════════
 function confirmPrint() {
-  if (!currentUser) return;
-  if (currentUser.tokens <= 0) {
-    alert('❌ You have no tokens left. Please contact the admin to top up your balance.');
-    return;
+  if (!USER) return;
+  if (USER.tokens <= 0) {
+    alert('❌ No tokens remaining. Contact admin to top up.'); return;
   }
-  document.getElementById('modal-token-count').textContent = currentUser.tokens;
-  document.getElementById('modal-confirm').classList.add('open');
+  document.getElementById('modal-tok').textContent = USER.tokens;
+  document.getElementById('modal-grno').textContent = NEXT_GR;
+  document.getElementById('modal').classList.add('open');
 }
-function closeModal() {
-  document.getElementById('modal-confirm').classList.remove('open');
-}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
 
 function doPrint() {
   closeModal();
-
-  // Build log payload
-  var payload = {
-    action:      'printGR',
-    pin:         currentUser.pin,
-    grNo:        gv('f_gr'),
-    date:        gv('f_date'),
-    fromCity:    gv('f_from'),
-    toCity:      gv('f_to'),
-    truckNo:     gv('f_truck'),
-    owner:       gv('f_owner'),
-    driver:      gv('f_driver'),
-    dl:          gv('f_dl'),
-    company:     gv('f_co_name'),
-    consignor:   gv('f_cs_name'),
-    csGstin:     gv('f_cs_gstin'),
-    consignee:   gv('f_ce_name'),
-    ceGstin:     gv('f_ce_gstin'),
-    desc:        gv('f_desc'),
-    weight:      gv('f_weight'),
-    rate:        gv('f_rate'),
-    freight:     gv('f_freight'),
-    gst:         gv('f_gst'),
-    advance:     gv('f_advance'),
-    st:          gv('f_st') + '.' + gv('f_st_paise'),
-    payStatus:   gv('f_paid'),
-    billNo:      gv('f_bill_no'),
-    challan:     gv('f_challan'),
-    permit:      gv('f_permit')
-  };
-
-  callAPIPost(payload, function(res) {
+  var p = USER.profile;
+  apiPost({
+    action:'printGR', pin:USER.pin,
+    grNo:NEXT_GR, date:gv('f_date'),
+    fromCity:gv('f_from'), toCity:gv('f_to'),
+    truckNo:gv('f_truck'), owner:gv('f_owner'),
+    driver:gv('f_driver'), dl:gv('f_dl'),
+    company:p.coName, pan:p.pan, gstin:p.gstin,
+    consignor:gv('f_cs_name'), csGstin:gv('f_cs_gstin'),
+    consignee:gv('f_ce_name'), ceGstin:gv('f_ce_gstin'),
+    desc:gv('f_desc'), weight:gv('f_wt'), rate:gv('f_rate'),
+    freight:gv('f_freight'), gst:gv('f_gst'), advance:gv('f_adv'),
+    st:gv('f_st')+'.'+gv('f_stp'), payStatus:gv('f_pay'),
+    billNo:gv('f_bill'), challan:gv('f_challan'), permit:gv('f_permit')
+  }, function(res) {
     if (res.success) {
-      currentUser.tokens = res.tokensLeft;
-      document.getElementById('token-display').textContent = res.tokensLeft;
-      document.getElementById('tb-user').textContent = '👤 ' + currentUser.name + ' | 🎫 Tokens: ' + res.tokensLeft;
+      // Advance GR counter
+      NEXT_GR = res.nextGR;
+      USER.tokens = res.tokensLeft;
+      USER.profile.lastGR = res.nextGR - 1;
+
+      document.getElementById('gr-num-display').textContent = NEXT_GR;
+      document.getElementById('gr-meta').textContent =
+        'Last used: ' + (NEXT_GR-1) + ' → Next GR will be: ' + NEXT_GR;
+      document.getElementById('tok-disp').textContent = res.tokensLeft;
+      document.getElementById('tb-user').textContent =
+        '👤 ' + USER.name + '   |   🎫 ' + res.tokensLeft + ' tokens';
+
       window.print();
     } else {
-      alert('❌ ' + (res.message || 'Could not process print. Please try again.'));
+      alert('❌ ' + (res.message || 'Could not process. Try again.'));
     }
   });
 }
 
-// =============================================
+// ══════════════════════════════════════════════════════
 //  ADMIN FUNCTIONS
-// =============================================
+// ══════════════════════════════════════════════════════
 function addUser() {
-  var pin     = document.getElementById('a_pin').value.trim();
-  var name    = document.getElementById('a_name').value.trim();
-  var contact = document.getElementById('a_contact').value.trim();
-  var tokens  = parseInt(document.getElementById('a_tokens').value) || 0;
-  if (!pin || !name) { alert('PIN and Name are required.'); return; }
-
-  callAPIPost({ action:'addUser', pin:pin, name:name, contact:contact, tokens:tokens }, function(res) {
-    var msg = document.getElementById('admin-user-msg');
+  var pin=gv('a_pin'), name=gv('a_name');
+  var contact=gv('a_contact');
+  var tokens=parseInt(document.getElementById('a_tokens').value)||0;
+  if (!pin||!name) { msg('a-user-msg','PIN and Name required.','err'); return; }
+  apiPost({ action:'addUser', pin:pin, name:name, contact:contact, tokens:tokens }, function(res){
+    msg('a-user-msg',(res.success?'✅ ':'❌ ')+(res.message||''),res.success?'ok':'err');
     if (res.success) {
-      msg.textContent = '✅ ' + res.message;
-      ['a_pin','a_name','a_contact','a_tokens'].forEach(function(id){ document.getElementById(id).value=''; });
+      ['a_pin','a_name','a_contact','a_tokens'].forEach(function(id){
+        document.getElementById(id).value='';
+      });
       loadUsers();
-    } else {
-      msg.textContent = '❌ ' + (res.message||'Error');
     }
   });
 }
 
-function topupTokens() {
-  var pin    = document.getElementById('a_topup_pin').value.trim();
-  var tokens = parseInt(document.getElementById('a_topup_tokens').value) || 0;
-  if (!pin || !tokens) { alert('PIN and token amount required.'); return; }
-
-  callAPIPost({ action:'topupTokens', pin:pin, tokens:tokens }, function(res) {
-    var msg = document.getElementById('admin-topup-msg');
+function topup() {
+  var pin=gv('a_topup_pin');
+  var tokens=parseInt(document.getElementById('a_topup_tok').value)||0;
+  if (!pin||!tokens) { msg('a-topup-msg','PIN and amount required.','err'); return; }
+  apiPost({ action:'topupTokens', pin:pin, tokens:tokens }, function(res){
+    msg('a-topup-msg',(res.success?'✅ ':'❌ ')+(res.message||''),res.success?'ok':'err');
     if (res.success) {
-      msg.textContent = '✅ ' + res.message;
-      document.getElementById('a_topup_pin').value = '';
-      document.getElementById('a_topup_tokens').value = '';
+      document.getElementById('a_topup_pin').value='';
+      document.getElementById('a_topup_tok').value='';
       loadUsers();
-    } else {
-      msg.textContent = '❌ ' + (res.message||'Error');
     }
   });
 }
 
 function loadUsers() {
-  if (!checkConfig()) return;
-  var wrap = document.getElementById('users-table-wrap');
-  wrap.innerHTML = '<p style="color:#aaa;font-size:13px;">⏳ Loading...</p>';
-  callAPI({ action:'getUsers' }, function(res) {
-    if (!res.success || !res.users || !res.users.length) {
-      wrap.innerHTML = '<p style="color:#aaa;font-size:13px;">No users found.</p>'; return;
+  var w=document.getElementById('users-wrap');
+  w.innerHTML='<p style="color:#aaa;font-size:13px;">⏳ Loading...</p>';
+  apiGet({ action:'getUsers' }, function(res) {
+    if (!res.success||!res.users||!res.users.length) {
+      w.innerHTML='<p style="color:#aaa;font-size:13px;">No users found.</p>'; return;
     }
-    var html = '<table class="data-table"><thead><tr><th>PIN</th><th>Name</th><th>Contact</th><th>Tokens Left</th><th>Total Used</th><th>Added On</th></tr></thead><tbody>';
-    res.users.forEach(function(u) {
-      var tc = parseInt(u.tokens)<=0 ? 'token-zero' : 'token-count';
-      html += '<tr><td><strong>'+esc(u.pin)+'</strong></td><td>'+esc(u.name)+'</td><td>'+esc(u.contact)+'</td><td class="'+tc+'">'+esc(u.tokens)+'</td><td>'+esc(u.used)+'</td><td>'+esc(u.created)+'</td></tr>';
+    var h='<div style="overflow-x:auto;"><table class="dt"><thead><tr>'
+      +'<th>PIN</th><th>Name</th><th>Contact</th>'
+      +'<th>Tokens Left</th><th>Total Used</th><th>Last GR</th><th>Company</th><th>Created</th>'
+      +'</tr></thead><tbody>';
+    res.users.forEach(function(u){
+      var tc=parseInt(u.tokens)<=0?'tok-no':'tok-ok';
+      h+='<tr><td><strong>'+x(u.pin)+'</strong></td><td>'+x(u.name)+'</td>'
+        +'<td>'+x(u.contact)+'</td><td class="'+tc+'">'+x(u.tokens)+'</td>'
+        +'<td>'+x(u.used)+'</td><td>'+x(u.lastGR)+'</td>'
+        +'<td>'+x(u.coName)+'</td><td>'+x(u.created)+'</td></tr>';
     });
-    html += '</tbody></table>';
-    wrap.innerHTML = html;
+    w.innerHTML=h+'</tbody></table></div>';
   });
 }
 
 function loadLogs() {
-  if (!checkConfig()) return;
-  var wrap = document.getElementById('logs-table-wrap');
-  wrap.innerHTML = '<p style="color:#aaa;font-size:13px;">⏳ Loading...</p>';
-  callAPI({ action:'getLogs' }, function(res) {
-    if (!res.success || !res.logs || !res.logs.length) {
-      wrap.innerHTML = '<p style="color:#aaa;font-size:13px;">No logs yet.</p>'; return;
+  var w=document.getElementById('logs-wrap');
+  w.innerHTML='<p style="color:#aaa;font-size:13px;">⏳ Loading...</p>';
+  apiGet({ action:'getLogs' }, function(res) {
+    if (!res.success||!res.logs||!res.logs.length) {
+      w.innerHTML='<p style="color:#aaa;font-size:13px;">No logs yet.</p>'; return;
     }
-    var html = '<div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Time</th><th>User</th><th>GR#</th><th>Company</th><th>From</th><th>To</th><th>Truck</th><th>Consignor</th><th>Consignee</th><th>Goods</th><th>Wt</th><th>Freight</th><th>Status</th></tr></thead><tbody>';
-    res.logs.forEach(function(l) {
-      html += '<tr><td>'+esc(l.ts)+'</td><td>'+esc(l.user)+'</td><td>'+esc(l.grNo)+'</td><td>'+esc(l.company)+'</td><td>'+esc(l.from)+'</td><td>'+esc(l.to)+'</td><td>'+esc(l.truck)+'</td><td>'+esc(l.consignor)+'</td><td>'+esc(l.consignee)+'</td><td>'+esc(l.desc)+'</td><td>'+esc(l.weight)+'</td><td>'+esc(l.freight)+'</td><td>'+esc(l.payStatus)+'</td></tr>';
+    var h='<div style="overflow-x:auto;"><table class="dt"><thead><tr>'
+      +'<th>Time</th><th>User</th><th>GR#</th><th>Company</th>'
+      +'<th>From→To</th><th>Truck</th><th>Consignor</th><th>Consignee</th>'
+      +'<th>Goods</th><th>Wt</th><th>Freight</th><th>Status</th>'
+      +'</tr></thead><tbody>';
+    res.logs.forEach(function(l){
+      h+='<tr><td>'+x(l.ts)+'</td><td>'+x(l.user)+'</td><td><strong>'+x(l.grNo)+'</strong></td>'
+        +'<td>'+x(l.company)+'</td><td>'+x(l.from)+' → '+x(l.to)+'</td>'
+        +'<td>'+x(l.truck)+'</td><td>'+x(l.consignor)+'</td><td>'+x(l.consignee)+'</td>'
+        +'<td>'+x(l.desc)+'</td><td>'+x(l.weight)+'</td><td>'+x(l.freight)+'</td>'
+        +'<td>'+x(l.payStatus)+'</td></tr>';
     });
-    html += '</tbody></table></div>';
-    wrap.innerHTML = html;
+    w.innerHTML=h+'</tbody></table></div>';
   });
 }
 
-function esc(v) {
-  if (v===null||v===undefined) return '';
-  return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function x(v){
+  return String(v===null||v===undefined?'':v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-
-// Enter key on PIN
-document.getElementById('pin-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
-document.getElementById('admin-pwd-input').addEventListener('keydown', function(e){ if(e.key==='Enter') doAdminLogin(); });
 </script>
 </body>
 </html>
