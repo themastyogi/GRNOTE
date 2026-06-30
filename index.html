@@ -576,6 +576,21 @@ label{display:block;font-size:10px;font-weight:700;color:#666;
   </div>
 </div>
 
+<!-- ══════════════ MY PAST GRs ══════════════ -->
+<div id="screen-mygrs" class="screen">
+  <div class="wrap">
+    <div class="panel">
+      <div class="sec">📜 My Past GR Notes</div>
+      <p style="font-size:12px;color:#888;margin-bottom:14px;">
+        Showing your GR history. Reprinting an existing GR costs <strong>0.25 tokens</strong>
+        (¼ of a fresh GR) and reuses the original details — no need to retype anything.
+      </p>
+      <button class="btn btn-gray btn-sm" onclick="loadMyGRs()" style="margin-bottom:14px;">🔄 Refresh</button>
+      <div id="mygrs-wrap"><p style="color:#aaa;font-size:13px;">Loading your GR history...</p></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ ADMIN PANEL ══════════════ -->
 <div id="screen-admin" class="screen">
   <div class="aw">
@@ -629,6 +644,23 @@ label{display:block;font-size:10px;font-weight:700;color:#666;
     <div class="mbtns">
       <button class="btn btn-green btn-sm" onclick="doPrint()">Yes, Print</button>
       <button class="btn btn-gray btn-sm" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ REPRINT CONFIRM MODAL ══════════════ -->
+<div class="mo" id="reprint-modal">
+  <div class="mb">
+    <h3>🔁 Confirm Reprint</h3>
+    <p>GR No. <strong id="rmodal-grno"></strong> will be reprinted with original details.<br>
+    This uses <strong>0.25 tokens</strong> (¼ of a fresh GR).<br><br>
+    Balance: <strong id="rmodal-tok">0</strong> tokens remaining.</p>
+    <p style="font-size:11px;color:#999;background:#f7f7f7;border-radius:5px;padding:8px 10px;margin-bottom:18px;text-align:left;">
+      💡 Turn off <strong>"Headers and footers"</strong> in the print dialog's "More settings" for a clean printout.
+    </p>
+    <div class="mbtns">
+      <button class="btn btn-green btn-sm" onclick="doReprint()">Yes, Reprint</button>
+      <button class="btn btn-gray btn-sm" onclick="closeReprintModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -706,7 +738,14 @@ function showScreen(id) {
     document.getElementById('tb-user').textContent =
       '👤 ' + USER.name + '   |   🎫 ' + USER.tokens + ' tokens';
     document.getElementById('tb-btns').innerHTML =
-      '<button class="btn btn-gray btn-sm" onclick="showScreen(\'screen-profile-edit\')" style="display:none">Profile</button>' +
+      '<button class="btn btn-gray btn-sm" onclick="openMyGRs()">📜 My Past GRs</button>' +
+      '<button class="btn btn-red btn-sm" onclick="logout()">Logout</button>';
+  } else if (id === 'screen-mygrs') {
+    tb.style.display = 'flex';
+    document.getElementById('tb-user').textContent =
+      '👤 ' + USER.name + '   |   🎫 ' + USER.tokens + ' tokens';
+    document.getElementById('tb-btns').innerHTML =
+      '<button class="btn btn-gray btn-sm" onclick="showScreen(\'screen-app\')">← Back to GR Form</button>' +
       '<button class="btn btn-red btn-sm" onclick="logout()">Logout</button>';
   } else if (id === 'screen-admin') {
     tb.style.display = 'flex';
@@ -1043,8 +1082,119 @@ function doPrint() {
 }
 
 // ══════════════════════════════════════════════════════
-//  ADMIN FUNCTIONS
+//  MY PAST GRs + REPRINT
 // ══════════════════════════════════════════════════════
+var REPRINT_TARGET = null; // holds the GR record being reprinted
+
+function openMyGRs() {
+  showScreen('screen-mygrs');
+  loadMyGRs();
+}
+
+function loadMyGRs() {
+  var w = document.getElementById('mygrs-wrap');
+  w.innerHTML = '<p style="color:#aaa;font-size:13px;">⏳ Loading...</p>';
+  apiGet({ action:'getUserLogs', pin:USER.pin }, function(res) {
+    if (!res.success || !res.logs || !res.logs.length) {
+      w.innerHTML = '<p style="color:#aaa;font-size:13px;">No GR notes printed yet.</p>';
+      return;
+    }
+    var h = '<div style="overflow-x:auto;"><table class="dt"><thead><tr>'
+      + '<th>GR No.</th><th>Date</th><th>From → To</th><th>Truck</th>'
+      + '<th>Consignor</th><th>Consignee</th><th>Goods</th><th>Reprints</th><th>Action</th>'
+      + '</tr></thead><tbody>';
+    res.logs.forEach(function(l) {
+      h += '<tr>'
+        + '<td><strong>' + x(l.grNo) + '</strong></td>'
+        + '<td>' + x(l.date) + '</td>'
+        + '<td>' + x(l.from) + ' → ' + x(l.to) + '</td>'
+        + '<td>' + x(l.truck) + '</td>'
+        + '<td>' + x(l.consignor) + '</td>'
+        + '<td>' + x(l.consignee) + '</td>'
+        + '<td>' + x(l.desc) + '</td>'
+        + '<td>' + (l.reprintCount > 0 ? l.reprintCount + '×' : '—') + '</td>'
+        + '<td><button class="btn btn-gold btn-sm" style="padding:4px 12px;font-size:11px;" '
+        +   'onclick=\'openReprint(' + JSON.stringify(l).replace(/'/g,'&#39;') + ')\'>🔁 Reprint</button></td>'
+        + '</tr>';
+    });
+    w.innerHTML = h + '</tbody></table></div>';
+  });
+}
+
+function openReprint(record) {
+  if (USER.tokens < 0.25) {
+    alert('❌ Insufficient tokens for reprint (needs 0.25). Contact admin to top up.');
+    return;
+  }
+  REPRINT_TARGET = record;
+  document.getElementById('rmodal-grno').textContent = record.grNo;
+  document.getElementById('rmodal-tok').textContent = USER.tokens;
+  document.getElementById('reprint-modal').classList.add('open');
+}
+function closeReprintModal() {
+  document.getElementById('reprint-modal').classList.remove('open');
+}
+
+function doReprint() {
+  closeReprintModal();
+  if (!REPRINT_TARGET) return;
+  var r = REPRINT_TARGET;
+
+  apiPost({ action:'reprintGR', pin:USER.pin, grNo:r.grNo }, function(res) {
+    if (!res.success) {
+      alert('❌ ' + (res.message || 'Could not reprint. Try again.'));
+      return;
+    }
+    USER.tokens = res.tokensLeft;
+    document.getElementById('tok-disp').textContent = res.tokensLeft;
+    document.getElementById('tb-user').textContent =
+      '👤 ' + USER.name + '   |   🎫 ' + res.tokensLeft + ' tokens';
+
+    // Populate the GR doc with the original record's data and print
+    var p = USER.profile;
+    st('d_pan',      'PAN NO. ' + (p.pan||''));
+    st('d_co_name',  p.coName||'');
+    st('d_co_sub',   p.coType||'');
+    st('d_co_addr',  p.coAddr||'');
+    st('d_gr',       r.grNo);
+    st('d_date',     r.date);
+    st('d_from',     r.from);
+    st('d_to',       r.to);
+    st('d_truck',    r.truck);
+    st('d_owner',    '');
+    st('d_driver',   '');
+    st('d_dl',       '');
+    st('d_cs_name',  r.consignor);
+    st('d_cs_a1',    '');
+    st('d_cs_a2',    '');
+    st('d_cs_gstin', '');
+    st('d_ce_name',  r.consignee);
+    st('d_ce_a1',    '');
+    st('d_ce_a2',    '');
+    st('d_ce_gstin', '');
+    st('d_desc',     r.desc);
+    st('d_wt',       r.weight);
+    st('d_rate',     '');
+    st('d_freight',  r.freight);
+    st('d_gst',      '');
+    st('d_adv',      '');
+    st('d_st',       '');
+    st('d_stp',      '');
+    st('d_pay',      r.payStatus);
+    st('d_bill',     dots());
+    st('d_challan',  dots());
+    st('d_permit',   dots());
+    applyLogo();
+
+    // Show the GR doc by switching to app screen with preview visible,
+    // then trigger print directly
+    showScreen('screen-app');
+    document.getElementById('gr-preview').style.display = 'block';
+    setTimeout(function(){ window.print(); }, 200);
+  });
+}
+
+
 function addUser() {
   var pin=gv('a_pin'), name=gv('a_name');
   var contact=gv('a_contact');
