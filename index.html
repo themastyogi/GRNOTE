@@ -273,7 +273,51 @@ label{display:block;font-size:10px;font-weight:700;color:#666;
         oninput="clr('login-msg')" onkeydown="if(event.key==='Enter')doLogin()">
       <button class="btn btn-gold btn-w" id="login-btn" onclick="doLogin()" disabled>Login</button>
       <div class="msg" id="login-msg"></div>
+      <div style="margin-top:14px;"><button class="lnk" style="color:#888;font-size:12px;" onclick="showScreen('screen-register')">New transport business? Register here →</button></div>
       <p style="font-size:10px;color:#bbb;margin-top:18px;">© 2026 Opsmeld Consulting. All rights reserved.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ NEW REGISTRATION ══════════════ -->
+<div id="screen-register" class="screen">
+  <div class="card-wrap" style="align-items:flex-start;padding-top:40px;min-height:100vh;overflow-y:auto;">
+    <div class="profile-card" style="max-width:480px;">
+      <h2>📝 Register New Account</h2>
+      <p style="font-size:12px;color:#888;margin-bottom:16px;">
+        Choose a PIN, fill your details and pick a plan. An admin will review and activate
+        your account — you'll be able to log in as soon as it's approved.
+      </p>
+      <div class="g2">
+        <div>
+          <label>Choose a PIN *</label>
+          <input id="r_pin" type="text" maxlength="8" placeholder="e.g. 5678">
+        </div>
+        <div>
+          <label>Your Name *</label>
+          <input id="r_name" placeholder="Full name">
+        </div>
+        <div class="f">
+          <label>Phone / Email *</label>
+          <input id="r_contact" placeholder="For approval contact &amp; support">
+        </div>
+        <div class="f">
+          <label>Which plan are you interested in? *</label>
+          <select id="r_plan">
+            <option value="">— Select a plan —</option>
+            <option value="Starter Pack (₹199 / 100 tokens)">Starter Pack — ₹199 / 100 tokens</option>
+            <option value="Business Pack (₹499 / 300 tokens)">Business Pack — ₹499 / 300 tokens (Popular)</option>
+            <option value="Bulk Pack (₹999 / 750 tokens)">Bulk Pack — ₹999 / 750 tokens</option>
+            <option value="Unlimited Monthly (₹299/month)">Unlimited Monthly — ₹299/month</option>
+            <option value="Not sure yet">Not sure yet — advise me</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-gold" onclick="submitRegistration()">✔ Submit Registration</button>
+        <button class="btn btn-gray" onclick="showScreen('screen-login')">← Back to Login</button>
+      </div>
+      <div class="msg" id="register-msg"></div>
     </div>
   </div>
 </div>
@@ -681,8 +725,8 @@ label{display:block;font-size:10px;font-weight:700;color:#666;
       <h4>💬 Need a custom plan or invoice for your business?</h4>
       <p>Reprints cost ¼ token (0.25) regardless of plan. Tap a plan above or message us directly to top up your account.</p>
       <div class="contact-btns">
-        <a class="btn wa-btn btn-sm" href="https://wa.me/8285424190?text=Hi%2C%20I%27d%20like%20to%20top%20up%20tokens%20for%20Transport%20GR%20Note%20Generator." target="_blank" rel="noopener">📱 WhatsApp Us</a>
-        <a class="btn btn-gray btn-sm" href="mailto:opsmeld@gmail.com?subject=GR%20Note%20Generator%20-%20Token%20Top-up%20Request">✉️ Email Billing</a>
+        <a class="btn wa-btn btn-sm" href="https://wa.me/910000000000?text=Hi%2C%20I%27d%20like%20to%20top%20up%20tokens%20for%20Transport%20GR%20Note%20Generator." target="_blank" rel="noopener">📱 WhatsApp Us</a>
+        <a class="btn btn-gray btn-sm" href="mailto:billing@opsmeld.com?subject=GR%20Note%20Generator%20-%20Token%20Top-up%20Request">✉️ Email Billing</a>
       </div>
       <p style="font-size:10px;color:#bbb;margin-top:14px;">*Reprints always cost 0.25 tokens even within "unlimited" plans counted as fair-use; excessive automated reprinting may be reviewed.</p>
     </div>
@@ -707,6 +751,12 @@ label{display:block;font-size:10px;font-weight:700;color:#666;
 <!-- ══════════════ ADMIN PANEL ══════════════ -->
 <div id="screen-admin" class="screen">
   <div class="aw">
+    <div class="apanel" style="border:2px solid var(--gold);">
+      <h3>🆕 Pending Approvals <span id="pending-count" style="background:var(--red);color:#fff;border-radius:10px;padding:2px 9px;font-size:11px;margin-left:8px;display:none;"></span></h3>
+      <button class="btn btn-gray btn-sm" onclick="loadPending()" style="margin-bottom:12px;">🔄 Refresh</button>
+      <div id="pending-wrap"><p style="color:#aaa;font-size:13px;">Click Refresh to load pending registrations.</p></div>
+    </div>
+
     <div class="apanel">
       <h3>➕ Add New User</h3>
       <div class="irow">
@@ -873,6 +923,7 @@ function showScreen(id) {
     document.getElementById('tb-user').textContent = '🔐 Admin Mode';
     document.getElementById('tb-btns').innerHTML =
       '<button class="btn btn-red btn-sm" onclick="logout()">← Exit Admin</button>';
+    setTimeout(loadPending, 100);
   } else {
     tb.style.display = 'none';
   }
@@ -1210,7 +1261,7 @@ function requestTopup(planName, planPrice) {
     + 'My PIN: ' + USER.pin + '%0A'
     + 'My Name: ' + USER.name + '%0A'
     + 'Company: ' + (USER.profile ? USER.profile.coName : '');
-  var waUrl = 'https://wa.me/8285424190?text=' + msg;
+  var waUrl = 'https://wa.me/910000000000?text=' + msg;
   window.open(waUrl, '_blank');
 }
 
@@ -1356,6 +1407,110 @@ function topup() {
   });
 }
 
+// ══════════════════════════════════════════════════════
+//  PUBLIC SELF-REGISTRATION
+// ══════════════════════════════════════════════════════
+function submitRegistration() {
+  var pin     = gv('r_pin');
+  var name    = gv('r_name');
+  var contact = gv('r_contact');
+  var plan    = gv('r_plan');
+
+  if (!pin || !name || !contact || !plan) {
+    msg('register-msg', 'Please fill all required fields.', 'err'); return;
+  }
+  msg('register-msg', '⏳ Submitting...', 'ok');
+
+  apiPost({
+    action:'requestRegistration', pin:pin, name:name,
+    contact:contact, requestedPlan:plan
+  }, function(res) {
+    if (res.success) {
+      msg('register-msg', '✅ ' + res.message, 'ok');
+      ['r_pin','r_name','r_contact'].forEach(function(id){ document.getElementById(id).value=''; });
+      document.getElementById('r_plan').selectedIndex = 0;
+      setTimeout(function(){ showScreen('screen-login'); }, 2200);
+    } else {
+      msg('register-msg', '❌ ' + (res.message||'Registration failed.'), 'err');
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  ADMIN — PENDING APPROVALS
+// ══════════════════════════════════════════════════════
+function loadPending() {
+  var w = document.getElementById('pending-wrap');
+  w.innerHTML = '<p style="color:#aaa;font-size:13px;">⏳ Loading...</p>';
+  apiGet({ action:'getPendingUsers' }, function(res) {
+    var badge = document.getElementById('pending-count');
+    if (!res.success || !res.pending || !res.pending.length) {
+      w.innerHTML = '<p style="color:#aaa;font-size:13px;">No pending registrations.</p>';
+      badge.style.display = 'none';
+      return;
+    }
+    badge.textContent = res.pending.length;
+    badge.style.display = 'inline-block';
+
+    var h = '<div style="overflow-x:auto;"><table class="dt"><thead><tr>'
+      + '<th>PIN</th><th>Name</th><th>Contact</th><th>Requested Plan</th><th>Submitted</th>'
+      + '<th>Approve With Tokens</th><th>Action</th>'
+      + '</tr></thead><tbody>';
+    res.pending.forEach(function(u) {
+      var planTokens = guessTokensForPlan(u.requestedPlan);
+      h += '<tr>'
+        + '<td><strong>' + x(u.pin) + '</strong></td>'
+        + '<td>' + x(u.name) + '</td>'
+        + '<td>' + x(u.contact) + '</td>'
+        + '<td>' + x(u.requestedPlan) + '</td>'
+        + '<td>' + x(u.created) + '</td>'
+        + '<td><input type="number" id="approve-tok-' + x(u.pin) + '" value="' + planTokens + '" style="width:80px;"></td>'
+        + '<td style="white-space:nowrap;">'
+        +   '<button class="btn btn-green btn-sm" style="padding:5px 10px;font-size:11px;" onclick="approveUserUI(\'' + x(u.pin) + '\')">✔ Approve</button> '
+        +   '<button class="btn btn-red btn-sm" style="padding:5px 10px;font-size:11px;" onclick="rejectUserUI(\'' + x(u.pin) + '\')">✕ Reject</button>'
+        + '</td></tr>';
+    });
+    w.innerHTML = h + '</tbody></table></div>';
+  });
+}
+
+// Rough heuristic to pre-fill the token field based on plan name picked at signup
+function guessTokensForPlan(planName) {
+  if (!planName) return 0;
+  if (planName.indexOf('Starter') !== -1)    return 100;
+  if (planName.indexOf('Business') !== -1)   return 300;
+  if (planName.indexOf('Bulk') !== -1)       return 750;
+  if (planName.indexOf('Unlimited') !== -1)  return 9999;
+  return 0;
+}
+
+function approveUserUI(pin) {
+  var tokInput = document.getElementById('approve-tok-' + pin);
+  var tokens = parseFloat(tokInput ? tokInput.value : 0) || 0;
+  apiPost({ action:'approveUser', pin:pin, tokens:tokens }, function(res) {
+    if (res.success) {
+      alert('✅ ' + res.message);
+      loadPending();
+      loadUsers();
+    } else {
+      alert('❌ ' + (res.message || 'Approval failed.'));
+    }
+  });
+}
+
+function rejectUserUI(pin) {
+  if (!confirm('Reject this registration? The PIN will be marked as Rejected.')) return;
+  apiPost({ action:'rejectUser', pin:pin }, function(res) {
+    if (res.success) {
+      alert('✅ ' + res.message);
+      loadPending();
+      loadUsers();
+    } else {
+      alert('❌ ' + (res.message || 'Rejection failed.'));
+    }
+  });
+}
+
 function loadUsers() {
   var w=document.getElementById('users-wrap');
   w.innerHTML='<p style="color:#aaa;font-size:13px;">⏳ Loading...</p>';
@@ -1364,13 +1519,15 @@ function loadUsers() {
       w.innerHTML='<p style="color:#aaa;font-size:13px;">No users found.</p>'; return;
     }
     var h='<div style="overflow-x:auto;"><table class="dt"><thead><tr>'
-      +'<th>PIN</th><th>Name</th><th>Contact</th>'
+      +'<th>PIN</th><th>Name</th><th>Contact</th><th>Status</th>'
       +'<th>Tokens Left</th><th>Total Used</th><th>Last GR</th><th>Company</th><th>Created</th>'
       +'</tr></thead><tbody>';
     res.users.forEach(function(u){
-      var tc=parseInt(u.tokens)<=0?'tok-no':'tok-ok';
+      var tc=parseFloat(u.tokens)<=0?'tok-no':'tok-ok';
+      var statusColor = u.status==='Active' ? 'tok-ok' : (u.status==='Pending' ? 'tok-no' : '');
       h+='<tr><td><strong>'+x(u.pin)+'</strong></td><td>'+x(u.name)+'</td>'
-        +'<td>'+x(u.contact)+'</td><td class="'+tc+'">'+x(u.tokens)+'</td>'
+        +'<td>'+x(u.contact)+'</td><td class="'+statusColor+'">'+x(u.status)+'</td>'
+        +'<td class="'+tc+'">'+x(u.tokens)+'</td>'
         +'<td>'+x(u.used)+'</td><td>'+x(u.lastGR)+'</td>'
         +'<td>'+x(u.coName)+'</td><td>'+x(u.created)+'</td></tr>';
     });
