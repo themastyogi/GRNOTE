@@ -741,17 +741,21 @@ function apiGet(params, cb) {
   fetch(url)
     .then(function(r){ return r.json(); })
     .then(cb)
-    .catch(function(){ cb({ success:false, message:'Network error. Check your Apps Script URL and redeploy if needed.' }); });
+    .catch(function(err){
+      cb({ success:false, message:'Network error: ' + (err && err.message ? err.message : 'could not reach Apps Script. Check the URL is correct and deployed with access set to Anyone.') });
+    });
 }
 function apiPost(data, cb) {
   fetch(API, {
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
     body:JSON.stringify(data)
   })
   .then(function(r){ return r.json(); })
   .then(cb)
-  .catch(function(){ cb({ success:false, message:'Network error.' }); });
+  .catch(function(err){
+    cb({ success:false, message:'Network error: ' + (err && err.message ? err.message : 'could not reach Apps Script. Check the URL and that it is deployed with access set to Anyone.') });
+  });
 }
 
 // ══════════════════════════════════════════════════════
